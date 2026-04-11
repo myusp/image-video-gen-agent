@@ -1,8 +1,13 @@
 {
-  "name": "short-gen-remotion",
+  "name": "image-video-gen-agent",
   "version": "1.0.0",
-  "description": "Shared Remotion template for image-to-video compilation",
-  "private": true,
+  "description": "AI-powered short-form video production pipeline — YouTube Shorts / Instagram Reels via autonomous agents, Remotion, and open AI APIs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/myusp/image-video-gen-agent.git"
+  },
+  "homepage": "https://github.com/myusp/image-video-gen-agent#readme",
   "dependencies": {
     "@remotion/captions": "4.0.448",
     "@remotion/cli": "4.0.448",
@@ -31,5 +36,9 @@
   },
   "sideEffects": [
     "*.css"
-  ]
+  ],
+  "author": {
+    "name": "Mohamad Yusup",
+    "email": "mohamadyusup2111@gmail.com"
+  }
 }
