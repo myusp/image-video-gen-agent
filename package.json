@@ -1,0 +1,35 @@
+{
+  "name": "short-gen-remotion",
+  "version": "1.0.0",
+  "description": "Shared Remotion template for image-to-video compilation",
+  "private": true,
+  "dependencies": {
+    "@remotion/captions": "4.0.448",
+    "@remotion/cli": "4.0.448",
+    "@remotion/media": "4.0.448",
+    "@remotion/transitions": "4.0.448",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.448"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.448",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc",
+    "render": "remotion render",
+    "render:captions": "remotion render main",
+    "render:clean": "remotion render main-no-captions"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

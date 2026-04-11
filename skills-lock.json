@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "skills": {
+    "ai-image-prompts-skill": {
+      "source": "youmind-openlab/ai-image-prompts-skill",
+      "sourceType": "github",
+      "computedHash": "dfb32931d1343add4569c68973b354d0a34b4cd5ae66d41091a5db56297cce72"
+    },
+    "content-creation": {
+      "source": "anthropics/knowledge-work-plugins",
+      "sourceType": "github",
+      "computedHash": "012ed09d491de22ef3d2697e7f268597353711b8c17d72ce013c4a6e396df970"
+    },
+    "ffmpeg": {
+      "source": "digitalsamba/claude-code-video-toolkit",
+      "sourceType": "github",
+      "computedHash": "51fa05bc18bb2691e622aefd1d8ec6d4d96a9e9c44cdf599003c9d6003d11a07"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "computedHash": "df654933e451556147e384078c3fbdbac997cb0fe4d2f2db7642000c239304c5"
+    },
+    "shorts-script-personality": {
+      "source": "outscal/video-generator",
+      "sourceType": "github",
+      "computedHash": "22f740b9f50060c512cad5bf455da5e47df45b1de92f20613e479f9333610cff"
+    },
+    "social-content": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "c9d7ec3d297cdae52bd0279b226fd027664abc74aedc5f574c2d87a8f836045e"
+    },
+    "youtube-scriptwriting": {
+      "source": "cdeistopened/skill-stack",
+      "sourceType": "github",
+      "computedHash": "4fc5cb87a4214eb745603a4c6ed7c4381645c310b300e705dcdfc9f0e5c66064"
+    }
+  }
+}
