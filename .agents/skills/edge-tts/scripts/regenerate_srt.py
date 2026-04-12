@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
-"""Regenerate TTS SRT files using edge-tts 7.x SubMaker API (streaming)."""
+"""Regenerate TTS SRT files using edge-tts 7.x SubMaker API (streaming).
 
+Usage:
+    python .agents/skills/edge-tts/scripts/regenerate_srt.py <project_dir> [num_scenes]
+
+    project_dir  — path to the video output folder
+    num_scenes   — number of scenes (optional, auto-detected from scene_* folders)
+
+Environment (.env):
+    EDGE_TTS_NAME         — voice name (default: id-ID-ArdiNeural)
+    WORD_BREAK_SUBTITLE   — words per caption block (default: 4)
+"""
+
+import argparse
 import asyncio
 import os
 import re
@@ -14,10 +26,31 @@ try:
 except ImportError:
     raise ImportError("Run: pip install edge-tts>=7.0")
 
-PROJECT_DIR = Path("output/20260411_funfact-planet-mars")
-VOICE = os.getenv("EDGE_TTS_NAME", "id-ID-ArdiNeural").strip()
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Regenerate SRT from edge-tts SubMaker")
+    parser.add_argument("project_dir", type=str, help="Path to the video output folder")
+    parser.add_argument("num_scenes", type=int, nargs="?", default=0,
+                        help="Number of scenes (auto-detected if omitted)")
+    parser.add_argument("--voice", type=str, default=None, help="Override TTS voice name")
+    return parser.parse_args()
+
+
+def _detect_num_scenes(project_dir: Path) -> int:
+    scene_dirs = sorted(project_dir.glob("scene_*"))
+    return len(scene_dirs)
+
+
+_args = _parse_args()
+PROJECT_DIR = Path(_args.project_dir)
+VOICE = _args.voice or os.getenv("EDGE_TTS_NAME", "id-ID-ArdiNeural").strip()
 WORD_BREAK = int(os.getenv("WORD_BREAK_SUBTITLE", "4"))
-NUM_SCENES = 6
+NUM_SCENES = _args.num_scenes or _detect_num_scenes(PROJECT_DIR)
+
+if not PROJECT_DIR.exists():
+    raise FileNotFoundError(f"Project directory not found: {PROJECT_DIR}")
+if NUM_SCENES == 0:
+    raise ValueError(f"No scene_* folders found in {PROJECT_DIR}")
 
 
 def parse_srt_time(t: str) -> float:

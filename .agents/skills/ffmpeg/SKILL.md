@@ -430,3 +430,53 @@ If this skill is missing information or could be improved:
   2. Create a PR to github.com/digitalsamba/claude-code-video-toolkit
 
 Just say "improve this skill" and I'll guide you through updating `.claude/skills/ffmpeg/SKILL.md`.
+
+---
+
+## Bundled Scripts
+
+### `compile_video.py` — Ken Burns video compiler
+
+Compiles scene images + TTS audio into a final `.mp4` using FFmpeg's `zoompan` filter. Applies per-scene Ken Burns motion effects (zoom-in, zoom-out, pan left/right/up/down) and concatenates all clips into a single output file.
+
+**Requires:** FFmpeg on `PATH`.
+```bash
+brew install ffmpeg     # macOS
+apt install ffmpeg      # Ubuntu/Debian
+```
+
+**Edit `PROJECT_DIR`, `NUM_SCENES`, and `MOTIONS`** at the top of the script, then run:
+```bash
+python .agents/skills/ffmpeg/scripts/compile_video.py
+```
+
+**Key config:**
+```python
+PROJECT_DIR = Path("output/your-video-folder")
+W, H = 1080, 1920   # portrait 9:16
+FPS = 25
+
+MOTIONS = {
+    1: { "desc": "slow zoom in", "z": "min(1+on/250*0.25,1.25)", "x": "iw/2-(iw/zoom/2)", "y": "ih/2-(ih/zoom/2)" },
+    2: { "desc": "pan right",    "z": "1.2", "x": "on/250*(iw-iw/1.2)", "y": "ih/2-(ih/1.2/2)" },
+    # Add one entry per scene
+}
+```
+
+**Common `zoompan` motion recipes:**
+
+| Effect | `z` | `x` | `y` |
+|--------|-----|-----|-----|
+| Zoom in (center) | `min(1+on/d*0.25,1.25)` | `iw/2-(iw/zoom/2)` | `ih/2-(ih/zoom/2)` |
+| Zoom out (center) | `max(1.25-on/d*0.25,1.0)` | `iw/2-(iw/zoom/2)` | `ih/2-(ih/zoom/2)` |
+| Pan left → right | `1.2` | `on/d*(iw-iw/1.2)` | `ih/2-(ih/1.2/2)` |
+| Pan right → left | `1.2` | `(iw-iw/1.2)-(on/d*(iw-iw/1.2))` | `ih/2-(ih/1.2/2)` |
+| Pan up → down | `1.2` | `iw/2-(iw/1.2/2)` | `on/d*(ih-ih/1.2)` |
+
+> **Note:** `d` = total frame count for the clip (use `ffprobe` duration × FPS).
+
+**Output:** `{PROJECT_DIR}/compiled.mp4`
+
+**When to use vs Remotion:**
+- Use this script for a quick FFmpeg-only preview, or when Remotion is unavailable.
+- For final output with animated captions, cross-fade transitions, and composition presets, use the **Remotion Compilation Agent** instead.

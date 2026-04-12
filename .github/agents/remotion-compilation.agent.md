@@ -42,7 +42,9 @@ The Remotion project lives at the **workspace root** (not per-video). All videos
 `Root.tsx` uses `calculateMetadata` to fetch `scene-config.json` from `staticFile()` at render time:
 - `scene-config.json` lives in the video folder (which becomes the public dir)
 - `calculateMetadata` computes `durationInFrames` from the scene durations minus transition overlaps
-- Two compositions are registered: `main` (with captions) and `main-no-captions`
+- **Dimensions are set dynamically** from `videoConfig` in the config file (portrait/landscape/custom)
+- Three compositions are registered: `main` (TikTok captions), `main-plain-captions`, and `main-no-captions`
+- All compositions share the same `calculateMetadata` which returns correct `width`/`height` per video
 
 ### Concurrent Builds
 
@@ -102,8 +104,8 @@ Accept either:
 - a video title that can be resolved under the `output/` path
 
 Optional inputs:
+- **orientation**: `portrait` (1080×1920, default) or `landscape` (1920×1080) — auto-detected from first scene image if not specified
 - target FPS, default `30`
-- target resolution, default `1080x1920` for shorts
 - transition type override (default: `fade`)
 - transition duration, default `15` frames (0.5s at 30fps)
 - **caption style**: `tiktok` (word-by-word highlight, default) or `plain` (simple white text without highlight)
@@ -161,7 +163,9 @@ Default: `fade()` at `15` frames (`linearTiming({ durationInFrames: 15 })`) unle
 
 ## scene-config.json Format
 
-Each video folder MUST have a `scene-config.json` in this exact format:
+Each video folder MUST have a `scene-config.json`. Two formats are supported:
+
+### Format A — Array only (portrait default, backward compatible)
 
 ```json
 [
@@ -171,23 +175,41 @@ Each video folder MUST have a `scene-config.json` in this exact format:
     "audioPath": "scene_1/audio_1.mp3",
     "durationSeconds": 7.944,
     "motionEffect": "zoom_in"
-  },
-  {
-    "sceneNumber": 2,
-    "imagePath": "scene_2/image_2.jpeg",
-    "audioPath": "scene_2/audio_2.mp3",
-    "durationSeconds": 10.44,
-    "motionEffect": "pan_left_right"
   }
 ]
 ```
 
-Fields:
+### Format B — Object with videoConfig (supports orientation)
+
+```json
+{
+  "videoConfig": {
+    "orientation": "landscape"
+  },
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imagePath": "scene_1/image_1.jpeg",
+      "audioPath": "scene_1/audio_1.mp3",
+      "durationSeconds": 7.944,
+      "motionEffect": "zoom_in"
+    }
+  ]
+}
+```
+
+**videoConfig fields:**
+- `orientation` — `"portrait"` (1080×1920) or `"landscape"` (1920×1080)
+- `width` / `height` — custom dimensions (overrides orientation)
+
+**Scene fields:**
 - `sceneNumber` — 1-indexed scene order
 - `imagePath` — relative path to image from the video folder (used as `staticFile()`)
 - `audioPath` — relative path to per-scene TTS audio
 - `durationSeconds` — scene duration in seconds (from audio duration, NOT SRT estimate)
 - `motionEffect` — one of: `zoom_in`, `zoom_out`, `pan_left_right`, `pan_right_left`, `pan_up_down`, `pan_down_up`, `ken_burns`
+
+**IMPORTANT:** For landscape videos, always use Format B with `"orientation": "landscape"`. The Remotion template reads `videoConfig` to dynamically set composition width/height via `calculateMetadata`.
 
 Also ensure `subtitles.srt` exists in the video folder root for captions.
 
@@ -213,9 +235,27 @@ Also ensure `subtitles.srt` exists in the video folder root for captions.
 1. Enumerate scenes in numeric order (`scene_1`, `scene_2`, ...).
 2. For each scene: measure `audio_{x}.mp3` duration (use ffprobe or similar).
 3. Read `prompt_{x}.txt` and apply Motion Selection rules.
-4. Write `scene-config.json` to the video folder root.
-5. Save a human-readable log to `remotion_motions.txt`:
+4. **Detect orientation** from the first scene image using ffprobe or Python PIL:
+   ```bash
+   # Quick dimension check
+   ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 scene_1/image_1.jpeg
    ```
+   - If width > height → `landscape`
+   - If height > width → `portrait`
+   - If user explicitly specified orientation, use that instead
+5. Write `scene-config.json` using **Format B** (object with `videoConfig`):
+   ```json
+   {
+     "videoConfig": {
+       "orientation": "landscape"
+     },
+     "scenes": [ ... ]
+   }
+   ```
+   For portrait videos, Format A (plain array) is also acceptable for backward compatibility.
+6. Save a human-readable log to `remotion_motions.txt`:
+   ```
+   orientation: landscape (1920x1080)
    scene_1: zoom_in     (prompt: "close-up of astronaut helmet...")
    scene_2: pan_left_right  (prompt: "rocket launch...")
    ```

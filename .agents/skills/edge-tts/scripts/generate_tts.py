@@ -1,7 +1,20 @@
 #!/usr/bin/env python3
-"""Generate TTS audio + SRT for all scenes, then concatenate full audio and merge SRT."""
+"""Generate TTS audio + SRT for all scenes, then concatenate full audio and merge SRT.
 
+Usage:
+    python .agents/skills/edge-tts/scripts/generate_tts.py <project_dir> [num_scenes]
+
+    project_dir  — path to the video output folder (e.g. output/20260411_funfact-planet-mars)
+    num_scenes   — number of scenes (optional, auto-detected from scene_* folders)
+
+Environment (.env):
+    EDGE_TTS_NAME         — voice name (default: id-ID-ArdiNeural)
+    WORD_BREAK_SUBTITLE   — words per caption block (default: 4)
+"""
+
+import argparse
 import asyncio
+import glob
 import os
 import re
 from pathlib import Path
@@ -14,10 +27,34 @@ try:
 except ImportError:
     raise ImportError("Run: pip install edge-tts")
 
-PROJECT_DIR = Path("output/20260411_funfact-planet-mars")
-VOICE = os.getenv("EDGE_TTS_NAME", "id-ID-ArdiNeural").strip()
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate TTS audio + SRT per scene")
+    parser.add_argument("project_dir", type=str, help="Path to the video output folder")
+    parser.add_argument("num_scenes", type=int, nargs="?", default=0,
+                        help="Number of scenes (auto-detected if omitted)")
+    parser.add_argument("--voice", type=str, default=None, help="Override TTS voice name")
+    parser.add_argument("--rate", type=str, default="+0%", help="TTS speech rate (e.g. +10%%)")
+    return parser.parse_args()
+
+
+def _detect_num_scenes(project_dir: Path) -> int:
+    """Auto-detect scene count from scene_* folders."""
+    scene_dirs = sorted(project_dir.glob("scene_*"))
+    return len(scene_dirs)
+
+
+_args = _parse_args()
+PROJECT_DIR = Path(_args.project_dir)
+VOICE = _args.voice or os.getenv("EDGE_TTS_NAME", "id-ID-ArdiNeural").strip()
 WORD_BREAK = int(os.getenv("WORD_BREAK_SUBTITLE", "4"))
-NUM_SCENES = 6
+NUM_SCENES = _args.num_scenes or _detect_num_scenes(PROJECT_DIR)
+TTS_RATE = _args.rate
+
+if not PROJECT_DIR.exists():
+    raise FileNotFoundError(f"Project directory not found: {PROJECT_DIR}")
+if NUM_SCENES == 0:
+    raise ValueError(f"No scene_* folders found in {PROJECT_DIR}")
 
 
 def parse_srt_time(t: str) -> float:
@@ -74,7 +111,7 @@ async def generate_scene_tts(scene_num: int) -> float:
         print(f"[SKIP] scene_{scene_num} TTS already exists")
     else:
         print(f"[TTS]  scene_{scene_num}: {text[:60]}...")
-        comm = edge_tts.Communicate(text=text, voice=VOICE, rate="+0%")
+        comm = edge_tts.Communicate(text=text, voice=VOICE, rate=TTS_RATE)
         raw_srt_path = scene_dir / f"_raw_subtitle_{scene_num}.srt"
         await comm.save(str(audio_path), str(raw_srt_path))
 

@@ -17,26 +17,59 @@ interface MainProps {
   captionStyle?: CaptionStyle;
 }
 
+interface VideoConfig {
+  orientation?: "portrait" | "landscape";
+  width?: number;
+  height?: number;
+}
+
+const getDimensions = (config: VideoConfig) => {
+  if (config.width && config.height) {
+    return { width: config.width, height: config.height };
+  }
+  if (config.orientation === "landscape") {
+    return { width: 1920, height: 1080 };
+  }
+  return { width: 1080, height: 1920 }; // portrait default
+};
+
 const loadSceneConfig = async (): Promise<{
   sceneConfig: SceneConfig[];
   totalFrames: number;
+  width: number;
+  height: number;
 }> => {
   const resp = await fetch(staticFile("scene-config.json"));
-  const sceneConfig: SceneConfig[] = await resp.json();
+  const raw = await resp.json();
+
+  // Support both array format and object format with videoConfig
+  let sceneConfig: SceneConfig[];
+  let videoConfig: VideoConfig = {};
+
+  if (Array.isArray(raw)) {
+    sceneConfig = raw;
+  } else {
+    sceneConfig = raw.scenes;
+    videoConfig = raw.videoConfig || {};
+  }
+
+  const { width, height } = getDimensions(videoConfig);
   const totalFrames =
     sceneConfig.reduce(
       (sum, s) => sum + Math.round(s.durationSeconds * FPS),
       0,
     ) -
     TRANSITION_FRAMES * (sceneConfig.length - 1);
-  return { sceneConfig, totalFrames };
+  return { sceneConfig, totalFrames, width, height };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const calculateMetadata: CalculateMetadataFunction<any> = async () => {
-  const { sceneConfig, totalFrames } = await loadSceneConfig();
+  const { sceneConfig, totalFrames, width, height } = await loadSceneConfig();
   return {
     durationInFrames: totalFrames,
+    width,
+    height,
     props: { sceneConfig, withCaptions: true } satisfies MainProps,
   };
 };
@@ -44,9 +77,12 @@ const calculateMetadata: CalculateMetadataFunction<any> = async () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const calculateMetadataNoCaptions: CalculateMetadataFunction<any> =
   async () => {
-    const { sceneConfig, totalFrames } = await loadSceneConfig();
+    const { sceneConfig, totalFrames, width, height } =
+      await loadSceneConfig();
     return {
       durationInFrames: totalFrames,
+      width,
+      height,
       props: { sceneConfig, withCaptions: false } satisfies MainProps,
     };
   };
@@ -54,9 +90,12 @@ const calculateMetadataNoCaptions: CalculateMetadataFunction<any> =
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const calculateMetadataPlainCaptions: CalculateMetadataFunction<any> =
   async () => {
-    const { sceneConfig, totalFrames } = await loadSceneConfig();
+    const { sceneConfig, totalFrames, width, height } =
+      await loadSceneConfig();
     return {
       durationInFrames: totalFrames,
+      width,
+      height,
       props: {
         sceneConfig,
         withCaptions: true,

@@ -233,3 +233,54 @@ Save download metadata to `audio/audio_manifest.json` for traceability:
 - Cache search results for 24 hours to comply with API terms
 - Maximum 500 results per query; paginate if needed
 - Show "Source: Pixabay" attribution when displaying results to users
+
+---
+
+## Bundled Scripts
+
+### `download_bgm.py` — BGM search and download
+
+Searches Pixabay with multiple mood-based queries, picks the best match, downloads the MP3 into the project's `audio/` folder, and writes an `audio_manifest.json` for use by the video render pipeline.
+
+**Install deps:**
+```bash
+pip install requests python-dotenv
+```
+
+**Configure `.env`:**
+```
+PIXABAY_API_KEY=your_key_here
+```
+
+**Run directly (no editing needed):**
+```bash
+# With default queries
+python .agents/skills/pixabay-audio/scripts/download_bgm.py output/20260411_funfact-planet-mars
+
+# With custom mood-based queries
+python .agents/skills/pixabay-audio/scripts/download_bgm.py output/20260411_funfact-planet-mars \
+  --queries "cinematic space documentary" "epic orchestral dramatic" "science documentary ambient"
+```
+
+**CLI arguments:**
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `project_dir` | Yes | Path to the video output folder |
+| `--queries` | No | Space-separated BGM search queries |
+
+**Example queries by mood:**
+- Upbeat/fun: `"upbeat happy pop"` `"cheerful background music"`
+- Nature/calm: `"nature relaxing acoustic"` `"peaceful ambient"`
+- Dark/serious: `"dark horror ambient"` `"tense thriller underscore"`
+- Cinematic: `"cinematic orchestral"` `"epic dramatic background"`
+
+**Outputs:**
+- `audio/bgm.mp3` — downloaded BGM file
+- `audio/audio_manifest.json` — metadata (title, source URL, duration, query used)
+
+**Manifest format:**
+```json
+{
+  "bgm": { "file": "bgm.mp3", "title": "...", "source_url": "...", "query": "..." }
+}
+```

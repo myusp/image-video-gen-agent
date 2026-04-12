@@ -2,7 +2,7 @@
 
 ## Overview
 
-AI-powered short-form video production pipeline: `script → scene images → TTS audio → Remotion MP4`. Generates YouTube Shorts / Instagram Reels (1080×1920, 30fps) using autonomous agents and a shared Remotion template.
+AI-powered short-form video production pipeline: `script → scene images → TTS audio → Remotion MP4`. Generates YouTube Shorts / Instagram Reels (1080×1920, 30fps) or landscape YouTube videos (1920×1080) using autonomous agents and a shared Remotion template.
 
 ## Architecture
 
@@ -33,12 +33,20 @@ REMOTION_PUBLIC_DIR=./output/{video_folder} npm run render:captions \
 
 Python scripts live in `.agents/skills/*/scripts/`. Install deps: `pip install edge-tts requests python-dotenv pillow openai`
 
+**Script reuse**: All Python scripts in `.agents/skills/*/scripts/` accept CLI arguments. Run them directly — never copy or recreate scripts in the output folder:
+```bash
+python .agents/skills/pollinations-python/scripts/generate_images.py output/{folder}
+python .agents/skills/edge-tts/scripts/generate_tts.py output/{folder}
+python .agents/skills/pixabay-audio/scripts/download_bgm.py output/{folder}
+```
+
 ## Critical Constraints
 
 - **No long dashes in subtitles** — em dash `—` and en dash `–` cause caption rendering artifacts. Replace with commas, periods, or ASCII hyphen `-`
 - **JPEG only** — Scene images must be `.jpeg` (Pollinations API output). Other formats break rendering
 - **No symlinks in output** — Remotion serves via HTTP; symlinks → 404. Always copy real files
 - **Never modify `src/` per-video** — Shared template; per-video config goes only in `scene-config.json`
+- **Orientation support** — `scene-config.json` supports both portrait (1080×1920) and landscape (1920×1080). For landscape, use object format with `videoConfig.orientation: "landscape"`. Template reads dimensions dynamically via `calculateMetadata`
 - **Pan safety** — For pan effects, max translate must be `< (scale-1)/(2*scale) * 100%`. Current: scale 1.5, translate ±10% (safe limit ±16.67%)
 - **Caption offset** — `-150ms` compensates for edge-tts word-boundary timing delay; changing TTS providers requires re-tuning
 - **`prompt_N.txt` is required** — The compilation agent reads it to auto-select motion effects per scene

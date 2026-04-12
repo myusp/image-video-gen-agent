@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
-"""Search and download BGM from Pixabay for the Mars funfact video."""
+"""Search and download BGM from Pixabay for a video project.
 
+Usage:
+    python .agents/skills/pixabay-audio/scripts/download_bgm.py <project_dir> [--queries "q1" "q2" ...]
+
+    project_dir  — path to the video output folder
+    --queries    — search queries (default: cinematic orchestral)
+
+Environment (.env):
+    PIXABAY_API_KEY  — Pixabay API key (required)
+"""
+
+import argparse
 import json
 import os
 import requests
@@ -13,14 +24,26 @@ API_KEY = os.getenv("PIXABAY_API_KEY")
 if not API_KEY:
     raise EnvironmentError("PIXABAY_API_KEY is not set in .env")
 
-PROJECT_DIR = Path("output/20260411_funfact-planet-mars")
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Download BGM from Pixabay")
+    parser.add_argument("project_dir", type=str, help="Path to the video output folder")
+    parser.add_argument("--queries", nargs="+", default=None,
+                        help="BGM search queries (mood-based)")
+    return parser.parse_args()
+
+
+_args = _parse_args()
+PROJECT_DIR = Path(_args.project_dir)
 AUDIO_DIR = PROJECT_DIR / "audio"
 AUDIO_DIR.mkdir(parents=True, exist_ok=True)
 
 MANIFEST_PATH = AUDIO_DIR / "audio_manifest.json"
 
-# Video mood: documentary science, space = cinematic orchestral + epic
-BGM_QUERIES = ["cinematic space documentary", "epic orchestral dramatic", "science documentary ambient"]
+BGM_QUERIES = _args.queries or ["cinematic orchestral", "epic dramatic background", "ambient documentary"]
+
+if not PROJECT_DIR.exists():
+    raise FileNotFoundError(f"Project directory not found: {PROJECT_DIR}")
 
 
 def search_pixabay_audio(query: str, per_page: int = 5) -> list[dict]:

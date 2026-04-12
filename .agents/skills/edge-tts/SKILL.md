@@ -225,3 +225,79 @@ This word-level timing can be used as-is for karaoke-style subtitles, or post-pr
 | Voice not found | Run `edge-tts --list-voices` to verify voice name spelling |
 | Garbled audio | Ensure text is in the same language as the selected voice |
 | Timeout | Large text blocks may timeout; split into segments < 5000 chars |
+
+---
+
+## Bundled Scripts
+
+Two ready-to-run scripts are in `.agents/skills/edge-tts/scripts/`:
+
+### `generate_tts.py` — Full TTS + SRT pipeline
+
+Generates per-scene TTS audio (`audio_N.mp3`) and word-level SRT captions (`subtitle_N.srt`), then concatenates all scenes into `audio_full.mp3` + merged `subtitles.srt`.
+
+**Install deps:**
+```bash
+pip install edge-tts python-dotenv pydub
+```
+
+**Configure `.env`:**
+```
+EDGE_TTS_NAME=id-ID-ArdiNeural
+WORD_BREAK_SUBTITLE=4   # words per caption block (default: 4)
+```
+
+**Run directly (no editing needed):**
+```bash
+# Auto-detects scene count from scene_* folders
+python .agents/skills/edge-tts/scripts/generate_tts.py output/20260411_funfact-planet-mars
+
+# Explicit scene count + voice override
+python .agents/skills/edge-tts/scripts/generate_tts.py output/20260411_funfact-planet-mars 6 --voice en-US-AriaNeural
+
+# With custom speech rate
+python .agents/skills/edge-tts/scripts/generate_tts.py output/20260411_funfact-planet-mars --rate "+10%"
+```
+
+**CLI arguments:**
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `project_dir` | Yes | Path to the video output folder |
+| `num_scenes` | No | Number of scenes (auto-detected from `scene_*` folders) |
+| `--voice` | No | Override TTS voice (defaults to `EDGE_TTS_NAME` from `.env`) |
+| `--rate` | No | Speech rate adjustment (default: `+0%`) |
+
+**Per-scene outputs:**
+- `scene_N/audio_N.mp3` — TTS audio clip
+- `scene_N/subtitle_N.srt` — word-grouped SRT captions
+- `scene_N/subtitles_N.txt` — plain-text captions
+
+**Merged outputs:**
+- `audio/audio_full.mp3` — all scenes concatenated
+- `subtitles.srt` / `subtitles.txt` — merged caption file with per-scene time offsets
+
+**Resumable:** Skips any scene where `audio_N.mp3` already exists.
+
+---
+
+### `regenerate_srt.py` — SRT-only regeneration (no audio re-synthesis)
+
+Uses the `edge-tts >= 7.0` SubMaker streaming API to rebuild SRT files without re-generating audio. Use when caption grouping (`WORD_BREAK_SUBTITLE`) or timing needs adjustment but audio is already correct.
+
+**Requires edge-tts 7.x:**
+```bash
+pip install "edge-tts>=7.0"
+```
+
+**Run directly (no editing needed):**
+```bash
+# Auto-detects scene count
+python .agents/skills/edge-tts/scripts/regenerate_srt.py output/20260411_funfact-planet-mars
+
+# Explicit scene count + voice override
+python .agents/skills/edge-tts/scripts/regenerate_srt.py output/20260411_funfact-planet-mars 6 --voice en-US-AriaNeural
+```
+
+Uses the same `.env` variables as `generate_tts.py`.
+
+**Outputs:** Overwrites `subtitle_N.srt`, `subtitles_N.txt`, and the merged `subtitles.srt` / `subtitles.txt`.

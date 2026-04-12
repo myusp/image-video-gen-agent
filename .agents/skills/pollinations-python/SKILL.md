@@ -210,3 +210,49 @@ When writing or reviewing scripts, verify:
 | 402 | Insufficient pollen balance | Top up at https://enter.pollinations.ai |
 | 400 | Bad parameters | Check prompt, model name, size format |
 | 500 | Server error | Retry with exponential backoff |
+
+---
+
+## Bundled Scripts
+
+### `generate_images.py` — Batch scene image generation
+
+Reads `prompt_N.txt` from each scene folder and calls the Pollinations image API to generate a JPEG. Defaults are tuned for the 9:16 short-form video pipeline (1080×1920 portrait).
+
+**Install deps:**
+```bash
+pip install requests python-dotenv
+```
+
+**Configure `.env`:**
+```
+POLLINATIONS_API_KEY=your_key_here
+```
+
+**Run directly (no editing needed):**
+```bash
+# Portrait (default 1080×1920) — auto-detects scenes
+python .agents/skills/pollinations-python/scripts/generate_images.py output/20260411_funfact-planet-mars
+
+# Landscape (1920×1080)
+python .agents/skills/pollinations-python/scripts/generate_images.py output/20260411_funfact-planet-mars --orientation landscape
+
+# Custom model and dimensions
+python .agents/skills/pollinations-python/scripts/generate_images.py output/20260411_funfact-planet-mars \
+  --model nanobanana --width 1080 --height 1920
+```
+
+**CLI arguments:**
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `project_dir` | Yes | Path to the video output folder |
+| `--model` | No | Image model (default: `flux`) |
+| `--width` | No | Image width (default: auto from orientation) |
+| `--height` | No | Image height (default: auto from orientation) |
+| `--orientation` | No | `portrait` (1080×1920) or `landscape` (1920×1080) |
+
+**Output per scene:** `scene_N/image_N.jpeg`
+
+**Resumable:** Skips scenes where `image_N.jpeg` already exists.
+
+> **Important:** Output must be `.jpeg` — Remotion's renderer requires JPEG format. Other formats will break rendering.
