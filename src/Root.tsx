@@ -6,7 +6,6 @@ import { Main } from "./Main";
 import type { CaptionStyle } from "./CaptionOverlay";
 
 const FPS = 30;
-const TRANSITION_FRAMES = 15;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MainComp = Main as React.ComponentType<any>;
@@ -54,12 +53,13 @@ const loadSceneConfig = async (): Promise<{
   }
 
   const { width, height } = getDimensions(videoConfig);
-  const totalFrames =
-    sceneConfig.reduce(
-      (sum, s) => sum + Math.round(s.durationSeconds * FPS),
-      0,
-    ) -
-    TRANSITION_FRAMES * (sceneConfig.length - 1);
+  // Do NOT subtract transition overlap from total frames.
+  // Instead, Main.tsx extends each non-last scene by +TRANSITION_FRAMES so
+  // the TransitionSeries total == sum(durationSeconds * FPS) == audio full length.
+  const totalFrames = sceneConfig.reduce(
+    (sum, s) => sum + Math.round(s.durationSeconds * FPS),
+    0,
+  );
   return { sceneConfig, totalFrames, width, height };
 };
 

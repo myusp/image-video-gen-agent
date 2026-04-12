@@ -31,7 +31,13 @@ export const Main: React.FC<Props> = ({
 }) => {
   const children: React.ReactNode[] = [];
   sceneConfig.forEach((scene, index) => {
-    const durationInFrames = Math.round(scene.durationSeconds * FPS);
+    const isLast = index === sceneConfig.length - 1;
+    // For all scenes except the last, add TRANSITION_FRAMES so the scene
+    // "holds" visually during the fade while its audio has already ended.
+    // This ensures: TransitionSeries total == sum(durationSeconds * FPS)
+    // == audio_full length, with zero audio overlap between scenes.
+    const durationInFrames =
+      Math.round(scene.durationSeconds * FPS) + (isLast ? 0 : TRANSITION_FRAMES);
     children.push(
       <TransitionSeries.Sequence
         key={`scene-${scene.sceneNumber}`}

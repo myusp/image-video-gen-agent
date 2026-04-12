@@ -41,7 +41,7 @@ The Remotion project lives at the **workspace root** (not per-video). All videos
 
 `Root.tsx` uses `calculateMetadata` to fetch `scene-config.json` from `staticFile()` at render time:
 - `scene-config.json` lives in the video folder (which becomes the public dir)
-- `calculateMetadata` computes `durationInFrames` from the scene durations minus transition overlaps
+- `calculateMetadata` computes `durationInFrames` as `sum(durationSeconds × FPS)` — **no subtraction for transition overlaps**
 - **Dimensions are set dynamically** from `videoConfig` in the config file (portrait/landscape/custom)
 - Three compositions are registered: `main` (TikTok captions), `main-plain-captions`, and `main-no-captions`
 - All compositions share the same `calculateMetadata` which returns correct `width`/`height` per video
@@ -332,6 +332,17 @@ Remotion bundles assets via webpack and serves them over HTTP. Symlinks in `publ
 
 ### Audio format warning
 `@remotion/media` may log "Unknown container format for .mp3" — this is harmless. It falls back to `<Html5Audio>` which works correctly.
+
+### Video shorter than audio (duration mismatch)
+**Symptom:** Rendered video is shorter than the source audio by `N_transitions × 0.5s` (e.g., 35 scenes → 34 × 0.5s = 17s missing).
+
+**Root cause:** The bug pattern is: `totalFrames = sum(durationSeconds × FPS) - TRANSITION_FRAMES × (N-1)`. `TransitionSeries` overlaps frames during transitions, so naively subtracting the overlaps shrinks the total timeline while the audio streams carry their full length.
+
+**Correct implementation:**
+- `Root.tsx` — total frames = `sum(durationSeconds × FPS)` with **no subtraction**.
+- `Main.tsx` — each non-last scene's `durationInFrames = Math.round(scene.durationSeconds × FPS) + TRANSITION_FRAMES`. This extends scene N visually so it "holds" during the fade into scene N+1 while scene N's audio has ended. The `TransitionSeries` overlap then cancels exactly: `(D_i×fps + 15) - 15 = D_i×fps` per scene, total = `sum(D)`.
+
+**Math check:** For N scenes with transitions of T frames: `sum(D_i×fps + T) for first N-1 + D_N×fps - (N-1)×T = sum(D_i×fps)` ✓
 
 ## Resumability
 
