@@ -5,7 +5,6 @@ import {
   interpolate,
   staticFile,
   useCurrentFrame,
-  useVideoConfig,
 } from "remotion";
 
 export type MotionEffect =
@@ -20,15 +19,15 @@ export type MotionEffect =
 interface Props {
   imagePath: string;
   effect: MotionEffect;
+  sceneDurationInFrames: number;
 }
 
-export const SceneImage: React.FC<Props> = ({ imagePath, effect }) => {
+export const SceneImage: React.FC<Props> = ({ imagePath, effect, sceneDurationInFrames }) => {
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
 
   const easing = Easing.bezier(0.45, 0, 0.55, 1);
 
-  const progress = interpolate(frame, [0, durationInFrames], [0, 1], {
+  const progress = interpolate(frame, [0, sceneDurationInFrames], [0, 1], {
     easing,
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",

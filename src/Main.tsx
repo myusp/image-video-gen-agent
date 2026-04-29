@@ -32,12 +32,13 @@ export const Main: React.FC<Props> = ({
   const children: React.ReactNode[] = [];
   sceneConfig.forEach((scene, index) => {
     const isLast = index === sceneConfig.length - 1;
+    const sceneDurationInFrames = Math.round(scene.durationSeconds * FPS);
     // For all scenes except the last, add TRANSITION_FRAMES so the scene
     // "holds" visually during the fade while its audio has already ended.
     // This ensures: TransitionSeries total == sum(durationSeconds * FPS)
     // == audio_full length, with zero audio overlap between scenes.
     const durationInFrames =
-      Math.round(scene.durationSeconds * FPS) + (isLast ? 0 : TRANSITION_FRAMES);
+      sceneDurationInFrames + (isLast ? 0 : TRANSITION_FRAMES);
     children.push(
       <TransitionSeries.Sequence
         key={`scene-${scene.sceneNumber}`}
@@ -47,8 +48,8 @@ export const Main: React.FC<Props> = ({
           <SceneImage
             imagePath={scene.imagePath}
             effect={scene.motionEffect}
+            sceneDurationInFrames={sceneDurationInFrames}
           />
-          <Audio src={staticFile(scene.audioPath)} />
         </AbsoluteFill>
       </TransitionSeries.Sequence>,
     );
@@ -65,6 +66,7 @@ export const Main: React.FC<Props> = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
+      <Audio src={staticFile("audio_full.mp3")} />
       <TransitionSeries>{children}</TransitionSeries>
       {withCaptions && <CaptionOverlay captionStyle={captionStyle} />}
     </AbsoluteFill>
