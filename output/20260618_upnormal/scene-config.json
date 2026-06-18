@@ -3,14 +3,16 @@
     "orientation": "landscape",
     "width": 1920,
     "height": 1080,
-    "renderMode": "contain_blur"
+    "renderMode": "contain_blur",
+    "fullAudioPath": "audio_full.mp3",
+    "totalDuration": 538.018
   },
   "scenes": [
     {
       "sceneNumber": 1,
       "imagePath": "scene_1/image_1.jpeg",
       "audioPath": "scene_1/audio_1.mp3",
-      "durationSeconds": 9.82,
+      "durationSeconds": 10.96,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -46,7 +48,7 @@
       "sceneNumber": 3,
       "imagePath": "scene_3/image_3.jpeg",
       "audioPath": "scene_3/audio_3.mp3",
-      "durationSeconds": 9.52,
+      "durationSeconds": 9.92,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -82,7 +84,7 @@
       "sceneNumber": 5,
       "imagePath": "scene_5/image_5.jpeg",
       "audioPath": "scene_5/audio_5.mp3",
-      "durationSeconds": 10.14,
+      "durationSeconds": 10.92,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -100,7 +102,7 @@
       "sceneNumber": 6,
       "imagePath": "scene_6/image_6.jpeg",
       "audioPath": "scene_6/audio_6.mp3",
-      "durationSeconds": 8.44,
+      "durationSeconds": 8.9,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -154,7 +156,7 @@
       "sceneNumber": 9,
       "imagePath": "scene_9/image_9.jpeg",
       "audioPath": "scene_9/audio_9.mp3",
-      "durationSeconds": 11.0,
+      "durationSeconds": 11.54,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -172,7 +174,7 @@
       "sceneNumber": 10,
       "imagePath": "scene_10/image_10.jpeg",
       "audioPath": "scene_10/audio_10.mp3",
-      "durationSeconds": 10.04,
+      "durationSeconds": 10.52,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -190,7 +192,7 @@
       "sceneNumber": 11,
       "imagePath": "scene_11/image_11.jpeg",
       "audioPath": "scene_11/audio_11.mp3",
-      "durationSeconds": 9.42,
+      "durationSeconds": 9.82,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -208,7 +210,7 @@
       "sceneNumber": 12,
       "imagePath": "scene_12/image_12.jpeg",
       "audioPath": "scene_12/audio_12.mp3",
-      "durationSeconds": 9.38,
+      "durationSeconds": 10.0,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -226,7 +228,7 @@
       "sceneNumber": 13,
       "imagePath": "scene_13/image_13.jpeg",
       "audioPath": "scene_13/audio_13.mp3",
-      "durationSeconds": 8.92,
+      "durationSeconds": 9.58,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -262,7 +264,7 @@
       "sceneNumber": 15,
       "imagePath": "scene_15/image_15.jpeg",
       "audioPath": "scene_15/audio_15.mp3",
-      "durationSeconds": 9.58,
+      "durationSeconds": 10.08,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -280,7 +282,7 @@
       "sceneNumber": 16,
       "imagePath": "scene_16/image_16.jpeg",
       "audioPath": "scene_16/audio_16.mp3",
-      "durationSeconds": 9.96,
+      "durationSeconds": 10.66,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -316,7 +318,7 @@
       "sceneNumber": 18,
       "imagePath": "scene_18/image_18.jpeg",
       "audioPath": "scene_18/audio_18.mp3",
-      "durationSeconds": 10.06,
+      "durationSeconds": 10.6,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -370,7 +372,7 @@
       "sceneNumber": 21,
       "imagePath": "scene_21/image_21.jpeg",
       "audioPath": "scene_21/audio_21.mp3",
-      "durationSeconds": 9.64,
+      "durationSeconds": 10.3,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -388,7 +390,7 @@
       "sceneNumber": 22,
       "imagePath": "scene_22/image_22.jpeg",
       "audioPath": "scene_22/audio_22.mp3",
-      "durationSeconds": 9.38,
+      "durationSeconds": 9.76,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -406,7 +408,7 @@
       "sceneNumber": 23,
       "imagePath": "scene_23/image_23.jpeg",
       "audioPath": "scene_23/audio_23.mp3",
-      "durationSeconds": 8.36,
+      "durationSeconds": 8.74,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -424,7 +426,7 @@
       "sceneNumber": 24,
       "imagePath": "scene_24/image_24.jpeg",
       "audioPath": "scene_24/audio_24.mp3",
-      "durationSeconds": 9.66,
+      "durationSeconds": 10.04,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -442,7 +444,7 @@
       "sceneNumber": 25,
       "imagePath": "scene_25/image_25.jpeg",
       "audioPath": "scene_25/audio_25.mp3",
-      "durationSeconds": 10.22,
+      "durationSeconds": 10.579,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -460,7 +462,7 @@
       "sceneNumber": 26,
       "imagePath": "scene_26/image_26.jpeg",
       "audioPath": "scene_26/audio_26.mp3",
-      "durationSeconds": 9.421,
+      "durationSeconds": 9.861,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -478,7 +480,7 @@
       "sceneNumber": 27,
       "imagePath": "scene_27/image_27.jpeg",
       "audioPath": "scene_27/audio_27.mp3",
-      "durationSeconds": 9.46,
+      "durationSeconds": 9.82,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -496,7 +498,7 @@
       "sceneNumber": 28,
       "imagePath": "scene_28/image_28.jpeg",
       "audioPath": "scene_28/audio_28.mp3",
-      "durationSeconds": 9.04,
+      "durationSeconds": 9.48,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -514,7 +516,7 @@
       "sceneNumber": 29,
       "imagePath": "scene_29/image_29.jpeg",
       "audioPath": "scene_29/audio_29.mp3",
-      "durationSeconds": 10.12,
+      "durationSeconds": 10.62,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -532,7 +534,7 @@
       "sceneNumber": 30,
       "imagePath": "scene_30/image_30.jpeg",
       "audioPath": "scene_30/audio_30.mp3",
-      "durationSeconds": 10.2,
+      "durationSeconds": 10.8,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -550,7 +552,7 @@
       "sceneNumber": 31,
       "imagePath": "scene_31/image_31.jpeg",
       "audioPath": "scene_31/audio_31.mp3",
-      "durationSeconds": 9.02,
+      "durationSeconds": 9.54,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -586,7 +588,7 @@
       "sceneNumber": 33,
       "imagePath": "scene_33/image_33.jpeg",
       "audioPath": "scene_33/audio_33.mp3",
-      "durationSeconds": 8.72,
+      "durationSeconds": 9.22,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -604,7 +606,7 @@
       "sceneNumber": 34,
       "imagePath": "scene_34/image_34.jpeg",
       "audioPath": "scene_34/audio_34.mp3",
-      "durationSeconds": 8.92,
+      "durationSeconds": 9.26,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -622,7 +624,7 @@
       "sceneNumber": 35,
       "imagePath": "scene_35/image_35.jpeg",
       "audioPath": "scene_35/audio_35.mp3",
-      "durationSeconds": 8.28,
+      "durationSeconds": 8.84,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -640,7 +642,7 @@
       "sceneNumber": 36,
       "imagePath": "scene_36/image_36.jpeg",
       "audioPath": "scene_36/audio_36.mp3",
-      "durationSeconds": 9.24,
+      "durationSeconds": 9.74,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -676,7 +678,7 @@
       "sceneNumber": 38,
       "imagePath": "scene_38/image_38.jpeg",
       "audioPath": "scene_38/audio_38.mp3",
-      "durationSeconds": 8.34,
+      "durationSeconds": 8.74,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -694,7 +696,7 @@
       "sceneNumber": 39,
       "imagePath": "scene_39/image_39.jpeg",
       "audioPath": "scene_39/audio_39.mp3",
-      "durationSeconds": 8.14,
+      "durationSeconds": 8.7,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -712,7 +714,7 @@
       "sceneNumber": 40,
       "imagePath": "scene_40/image_40.jpeg",
       "audioPath": "scene_40/audio_40.mp3",
-      "durationSeconds": 8.84,
+      "durationSeconds": 9.34,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -730,7 +732,7 @@
       "sceneNumber": 41,
       "imagePath": "scene_41/image_41.jpeg",
       "audioPath": "scene_41/audio_41.mp3",
-      "durationSeconds": 8.18,
+      "durationSeconds": 8.66,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -766,7 +768,7 @@
       "sceneNumber": 43,
       "imagePath": "scene_43/image_43.jpeg",
       "audioPath": "scene_43/audio_43.mp3",
-      "durationSeconds": 10.12,
+      "durationSeconds": 10.62,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -784,7 +786,7 @@
       "sceneNumber": 44,
       "imagePath": "scene_44/image_44.jpeg",
       "audioPath": "scene_44/audio_44.mp3",
-      "durationSeconds": 10.66,
+      "durationSeconds": 11.0,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -802,7 +804,7 @@
       "sceneNumber": 45,
       "imagePath": "scene_45/image_45.jpeg",
       "audioPath": "scene_45/audio_45.mp3",
-      "durationSeconds": 10.76,
+      "durationSeconds": 11.36,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -820,7 +822,7 @@
       "sceneNumber": 46,
       "imagePath": "scene_46/image_46.jpeg",
       "audioPath": "scene_46/audio_46.mp3",
-      "durationSeconds": 8.78,
+      "durationSeconds": 9.32,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -856,7 +858,7 @@
       "sceneNumber": 48,
       "imagePath": "scene_48/image_48.jpeg",
       "audioPath": "scene_48/audio_48.mp3",
-      "durationSeconds": 9.76,
+      "durationSeconds": 10.46,
       "motionEffect": "zoom_out",
       "renderMode": "cover_subtle",
       "in": {
@@ -910,7 +912,7 @@
       "sceneNumber": 51,
       "imagePath": "scene_51/image_51.jpeg",
       "audioPath": "scene_51/audio_51.mp3",
-      "durationSeconds": 8.0,
+      "durationSeconds": 8.44,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -928,7 +930,7 @@
       "sceneNumber": 52,
       "imagePath": "scene_52/image_52.jpeg",
       "audioPath": "scene_52/audio_52.mp3",
-      "durationSeconds": 9.42,
+      "durationSeconds": 10.04,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {
@@ -946,7 +948,7 @@
       "sceneNumber": 53,
       "imagePath": "scene_53/image_53.jpeg",
       "audioPath": "scene_53/audio_53.mp3",
-      "durationSeconds": 8.16,
+      "durationSeconds": 10.698,
       "motionEffect": "none",
       "renderMode": "contain_blur",
       "in": {

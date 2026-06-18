@@ -15,6 +15,7 @@ Usage:
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -94,6 +95,63 @@ def subtle_motion_for(prompt: str):
     return None
 
 
+def ffprobe_duration(path: Path):
+    """Return media duration in seconds via ffprobe, or None on failure."""
+    try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "csv=p=0", str(path)],
+            capture_output=True, text=True, check=True,
+        )
+        return float(out.stdout.strip())
+    except (subprocess.CalledProcessError, ValueError, FileNotFoundError):
+        return None
+
+
+def apply_synced_durations(project_dir: Path, raw: list) -> bool:
+    """Recompute each scene's duration as a contiguous span anchored to the
+    full narration track, so the video timeline stays in sync with
+    audio_full.mp3 (which plays as one continuous track in the template).
+
+    Scene i spans from its SRT start to the next scene's SRT start; scene 1 is
+    forced to start at 0 (absorbing any lead-in silence) and the last scene
+    extends to the true end of audio_full.mp3. This absorbs the inter-scene
+    gaps that per-scene spoken durations (audio_durations.json) drop, which
+    would otherwise make images drift ahead of the narration.
+
+    Returns True if durations were recomputed, False to keep the fallback
+    (per-scene spoken durations).
+    """
+    times_path = project_dir / "scene_times.json"
+    full_audio = project_dir / "audio_full.mp3"
+    if not times_path.exists() or not full_audio.exists():
+        return False
+    try:
+        times = json.loads(times_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return False
+    full_dur = ffprobe_duration(full_audio)
+    if full_dur is None:
+        return False
+
+    # Collect each valid scene's SRT start (times is 0-indexed by scene number).
+    starts = []
+    for item in raw:
+        idx = item["n"] - 1
+        if not (0 <= idx < len(times)) or not times[idx]:
+            return False  # incomplete data -> fall back
+        starts.append(float(times[idx][0]))
+
+    starts[0] = 0.0  # absorb lead-in silence so audio_full stays synced from t=0
+    for i, item in enumerate(raw):
+        nxt = starts[i + 1] if i + 1 < len(starts) else full_dur
+        span = round(nxt - starts[i], 3)
+        if span <= 0:
+            return False  # non-monotonic timestamps -> fall back
+        item["duration"] = span
+    return True
+
+
 def build_config(project_dir: Path, orientation: str, motion_cap: float, use_sfx: bool) -> None:
     dims = ORIENTATIONS[orientation]
 
@@ -140,6 +198,12 @@ def build_config(project_dir: Path, orientation: str, motion_cap: float, use_sfx
     if not raw:
         print("[ERROR] No complete scenes found.", file=sys.stderr)
         sys.exit(1)
+
+    # Recompute contiguous, audio-synced durations from scene_times.json +
+    # audio_full.mp3 when available (keeps the single master narration track in
+    # sync). Falls back to per-scene spoken durations otherwise.
+    synced = apply_synced_durations(project_dir, raw)
+    print(f"[OK] scene durations: {'synced to audio_full.mp3' if synced else 'per-scene spoken (fallback)'}")
 
     # Decide subtle-motion scenes, capped. Collect ALL candidate scenes whose
     # prompt signals motion, then spread the capped selection EVENLY across the
@@ -200,12 +264,15 @@ def build_config(project_dir: Path, orientation: str, motion_cap: float, use_sfx
         )
         print(f"  {log[-1]}")
 
+    total_duration = round(sum(s["durationSeconds"] for s in scenes), 3)
     config = {
         "videoConfig": {
             "orientation": orientation,
             "width": dims["width"],
             "height": dims["height"],
             "renderMode": "contain_blur",
+            "fullAudioPath": "audio_full.mp3",
+            "totalDuration": total_duration,
         },
         "scenes": scenes,
     }
