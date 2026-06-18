@@ -121,13 +121,16 @@ All motion uses Remotion's `interpolate()` with `Easing.bezier` for GPU-accelera
 
 | Effect ID | Description | CSS Transform via interpolate |
 |-----------|-------------|-------------------------------|
-| `zoom_in` | Slow push into image center | `scale: 1.0 → 1.5` over scene duration |
-| `zoom_out` | Pull back from close frame | `scale: 1.5 → 1.0` over scene duration |
-| `pan_left_right` | Camera glide left → right | `translateX: 10% → -10%` at `scale: 1.5` |
-| `pan_right_left` | Camera glide right → left | `translateX: -10% → 10%` at `scale: 1.5` |
-| `pan_up_down` | Tilt down slowly | `translateY: 10% → -10%` at `scale: 1.5` |
-| `pan_down_up` | Tilt upward slowly | `translateY: -10% → 10%` at `scale: 1.5` |
-| `ken_burns` | Diagonal zoom + drift (cinematic) | `scale: 1.0 → 1.4` + `translate(5%, 3%)` combined |
+| `zoom_in` | Slow push into image center | `scale: 1.0 → 1.5` (full) / `1.0 → 1.10` (subtle) |
+| `zoom_out` | Pull back from close frame | `scale: 1.5 → 1.0` (full) / `1.10 → 1.0` (subtle) |
+| `pan_left_right` | Camera glide left → right | `translateX: 10% → -10%` at `scale: 1.5` (full) / `4% → -4%` at `scale: 1.12` (subtle) |
+| `pan_right_left` | Camera glide right → left | `translateX: -10% → 10%` at `scale: 1.5` (full) / `-4% → 4%` at `scale: 1.12` (subtle) |
+| `pan_up_down` | Tilt down slowly | `translateY: 10% → -10%` at `scale: 1.5` (full) / `4% → -4%` at `scale: 1.12` (subtle) |
+| `pan_down_up` | Tilt upward slowly | `translateY: -10% → 10%` at `scale: 1.5` (full) / `-4% → 4%` at `scale: 1.12` (subtle) |
+| `ken_burns` | Diagonal zoom + drift (cinematic) | `scale: 1.0 → 1.4` + `translate(5%, 3%)` (full) / `1.0 → 1.08` + `translate(2%, 1%)` (subtle) |
+| `none` | Static, full image (no transform) — recommended for AR-matching landscape | identity transform; pair with `contain_blur` |
+
+**Note:** "full" ranges apply when `renderMode` is `contain_blur` (image shown via `objectFit: "contain"`, so no cropping). "subtle" ranges apply when `renderMode` is `cover_subtle` (image uses `objectFit: "cover"` with minimal zoom to reduce cropping).
 
 **IMPORTANT — Pan safety rule:** For any pan effect, the translate range MUST NOT exceed `(scale - 1) / (2 * scale) * 100%`. At `scale: 1.5`, the maximum safe translate is ±16.67%. The current ±10% values provide a safe margin. If you ever adjust scale or translate, verify: `|maxTranslate%| < (scale - 1) / (2 * scale) * 100`. Violating this causes black edges.
 
@@ -145,6 +148,19 @@ For each scene, read `scene_{x}/prompt_{x}.txt` and apply this logic:
 | Rising, flying, sky, ascending, hope | `pan_down_up` |
 | Dramatic, emotional, cinematic, portrait, monologue | `ken_burns` |
 | Default / unclear | `zoom_in` |
+
+## Transition + SFX Selection from Prompt
+
+For each scene (scene 1 gets no `in.transition`), read `prompt_{x}.txt` and assign the `in` transition + selective SFX:
+
+| Prompt signal | in.transition | in.sfx (selective) |
+|---------------|---------------|--------------------|
+| Action, movement, speed, fight, collapse | `slide-from-left` / `slide-from-right` (alternate) | `whoosh` / `whip` (every other cut) |
+| Momentum, growth, launch, scaling, timeline | `wipe-from-left` / `wipe-from-right` (alternate) | `whoosh` / `whip` (every other cut) |
+| Reveal, hero, payoff, twist, warning | `flip` / `clock-wipe` (alternate) | `ding` |
+| Calm narration / continuation (default) | `fade` | none |
+
+Rules: never repeat the same SFX on consecutive scenes; most cuts carry no SFX. Subtle per-scene motion is reserved for a capped minority of high-impact scenes (default <=20%) and is distributed across the timeline; energy comes from transition variety, not constant sound or motion.
 
 ## Transition Reference
 
@@ -184,7 +200,8 @@ Each video folder MUST have a `scene-config.json`. Two formats are supported:
 ```json
 {
   "videoConfig": {
-    "orientation": "landscape"
+    "orientation": "landscape",
+    "renderMode": "auto"
   },
   "scenes": [
     {
@@ -192,7 +209,8 @@ Each video folder MUST have a `scene-config.json`. Two formats are supported:
       "imagePath": "scene_1/image_1.jpeg",
       "audioPath": "scene_1/audio_1.mp3",
       "durationSeconds": 7.944,
-      "motionEffect": "zoom_in"
+      "motionEffect": "zoom_in",
+      "renderMode": "contain_blur"
     }
   ]
 }
@@ -201,13 +219,29 @@ Each video folder MUST have a `scene-config.json`. Two formats are supported:
 **videoConfig fields:**
 - `orientation` — `"portrait"` (1080×1920) or `"landscape"` (1920×1080)
 - `width` / `height` — custom dimensions (overrides orientation)
+- `renderMode` (optional) — video-level default: `"auto"`, `"cover_subtle"`, or `"contain_blur"` (default `"auto"`)
 
 **Scene fields:**
 - `sceneNumber` — 1-indexed scene order
 - `imagePath` — relative path to image from the video folder (used as `staticFile()`)
 - `audioPath` — relative path to per-scene TTS audio
 - `durationSeconds` — scene duration in seconds (from audio duration, NOT SRT estimate)
-- `motionEffect` — one of: `zoom_in`, `zoom_out`, `pan_left_right`, `pan_right_left`, `pan_up_down`, `pan_down_up`, `ken_burns`
+- `motionEffect` — one of: `zoom_in`, `zoom_out`, `pan_left_right`, `pan_right_left`, `pan_up_down`, `pan_down_up`, `ken_burns`, `none` (static, no transform — recommended default for AR-matching landscape)
+- `renderMode` (optional) — per-scene override: `"auto"`, `"cover_subtle"`, or `"contain_blur"`
+- `in` (optional) — transition + SFX used to ENTER this scene: `{ "transition": <name|null>, "durationInFrames": <int, default 15>, "sfx": <sfxName|null> }`
+- `out` (optional) — transition + SFX as this scene EXITS: same shape as `in`
+
+**Cut resolution (one transition per cut):** the transition between scene N and N+1 = `scenes[N+1].in.transition` if set, else `scenes[N].out.transition` if set, else `fade`. The cut duration follows whichever side supplied the transition (`durationInFrames`, default 15). SFX is independent: `in.sfx` fires at the scene's first frame (at the cut in), `out.sfx` fires ~12 frames before the scene ends. Variable per-cut transition durations keep total frames at `sum(round(durationSeconds*FPS))` (audio stays in sync) because each scene is extended by exactly its own cut's frames.
+
+**Transition values:** `fade`, `slide-from-left|right|top|bottom`, `wipe-from-left|right|top|bottom`, `flip`, `clock-wipe`, `none`.
+**SFX values:** `@remotion/sfx` export names (`whoosh`, `whip`, `pageTurn`, `ding`, `vineBoom`, `uiSwitch`, `mouseClick`) or `null`.
+
+**Render Mode Reference:**
+| Mode | Behaviour | Cropping | Best for |
+|------|-----------|----------|----------|
+| `auto` (default) | Auto-detect based on AR match. If image AR ≈ frame AR → `cover_subtle`, else → `contain_blur` | Variable | Safe default |
+| `cover_subtle` | `objectFit: "cover"` with reduced zoom ranges (1.0→1.10 for zoom, scale 1.12 for pans) | Minimal (~9%) | Cinematic photos, landscapes, portraits |
+| `contain_blur` | `objectFit: "contain"` + blurred background layer. Original zoom ranges (1.0→1.5) safe since contain prevents cropping | 0% (full image) | Infographics, text-heavy images, diagrams, detail-critical compositions |
 
 **IMPORTANT:** For landscape videos, always use Format B with `"orientation": "landscape"`. The Remotion template reads `videoConfig` to dynamically set composition width/height via `calculateMetadata`.
 

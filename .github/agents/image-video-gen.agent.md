@@ -10,7 +10,8 @@ You are an expert **image-based video production agent**. Your job is to orchest
 ## Constraints
 
 - DO NOT skip the intent check — always determine if user needs a new script or already has one
-- DO NOT generate more than 12 or fewer than 8 seconds per scene segment
+- ALWAYS prioritize content quality over scene duration limits; a scene can be as short as 3 seconds if the visual represents the text perfectly
+- Scene count is UNRESTRICTED — split purely based on contextual changes, visual meaning, and narration flow
 - DO NOT hardcode output paths — always read `OUTPUT` from `.env`
 - DO NOT regenerate already-completed scenes (check for existing files to enable resume)
 - DO NOT use a different image style per scene — one `{image_style}` is locked in Phase 0 and appended to every scene prompt
@@ -240,11 +241,13 @@ If issues are found, ask the user to choose:
 
 ### Phase 3 — Segment Splitting
 
-Divide the script into scenes of **8–12 seconds each** (approximately 20–30 words per segment at normal speaking pace).
+Divide the script into scenes focused on **content quality and visual matching** (can be as short as 3 seconds).
 
 Rules:
 - Each segment = one scene
-- Split on natural sentence breaks, not mid-sentence
+- Split based on visual context changes and narrative flow, NOT word count or strict duration
+- Ensure the image perfectly represents the text being spoken
+- Split on natural sentence breaks or strong contextual shifts
 - Number scenes starting from 1: `scene_1`, `scene_2`, …
 - Save each segment to `{project_folder}/scene_{x}/subtitles_{x}.txt`
 
@@ -257,7 +260,8 @@ For each scene segment, invoke the `ai-image-prompts-skill` to find a curated pr
 
 The skill returns a curated prompt template with a sample image. Use the returned template as the base and adapt it to the exact scene narrative. The final prompt must:
 - Be visually specific: describe the shot composition, lighting, subject, and atmosphere
-- Encode movement-friendly framing hints where relevant (e.g. "wide establishing shot", "extreme close-up", "low angle looking up") — these hints are later used by the FFmpeg agent to choose the motion effect
+- Encode movement-friendly framing hints where relevant (e.g. "wide establishing shot", "extreme close-up", "low angle looking up") — these hints are later used to choose the motion effect
+- If the scene contains **text, data, labels, infographics, UI elements, signs, or any content where cropping would damage readability**, include a note in the prompt like `"text-heavy infographic"`, `"detailed data visualization"`, or `"signs and labels visible"` — this signals Phase 5.7 to select `contain_blur` render mode. If purely scenic/cinematic with no critical edge content, omit such notes (defaults to `cover_subtle`)
 - Be style-consistent across all scenes (same style keyword in every prompt)
 - Be free of any text, title overlays, or subtitle areas in the image composition
 
@@ -326,12 +330,32 @@ python .agents/skills/srt-to-scenes/scripts/build_config.py \
   --orientation {orientation}
 ```
 
+`build_config.py` now emits the **transition + SFX schema**: each scene gets `motionEffect` (default `"none"` = static full image, `renderMode: "contain_blur"`), an `in` object (transition into the scene + optional SFX), and an `out` object. A capped minority (default <=20%, `--motion-cap`) of high-impact scenes (establishing / hero / emotional / reveal) are promoted to subtle motion (`cover_subtle`) and spread across the timeline. This is the fix for AR-matching landscape images: full images shown statically, with energy from auto-selected transitions and selective `@remotion/sfx` sounds at the cuts. Use `--no-sfx` to disable SFX.
+
 This is **required in both SRT mode and TTS mode** before Remotion can render. It:
 - Reads `audio_durations.json` for scene durations
 - Reads `prompt_N.txt` per scene to auto-select motion effects
 - Writes `scene-config.json` and `remotion_motions.txt`
 
 If `scene-config.json` already exists and no images have changed, this phase can be skipped.
+
+#### Render Mode Selection Rules
+
+`scene-config.json` now supports a `renderMode` field at both video level (`videoConfig.renderMode`) and per-scene level (`scenes[].renderMode`). The agent MUST select the best mode per scene based on the image prompt content:
+
+| renderMode | When to select | Rationale |
+|------------|----------------|-----------|
+| `contain_blur` | Scene image contains **text, infographics, diagrams, labels, data, UI screenshots, maps, charts, or detailed compositions** where cropping would lose critical information | `objectFit: "contain"` + blurred background = 0% crop, full image always visible |
+| `cover_subtle` | Scene image is a **cinematic photo, landscape, portrait, scenic view, atmospheric shot, or aesthetic composition** where some edge cropping is acceptable | Reduced zoom ranges (1.0→1.10) allow motion feel with minimal (~9%) crop |
+| `auto` (default) | Use when uncertain — the Remotion template auto-detects based on image vs frame aspect ratio match | Safe default for both modes |
+
+**Decision Process:**
+1. Read each scene's `prompt_N.txt`
+2. If the prompt describes content where image completeness is critical (text, UI, data, infographics, labels, signs) → `contain_blur`
+3. If the prompt describes cinematic/photographic content (scenic, portrait, landscape, action) → `cover_subtle`
+4. When in doubt → omit `renderMode` (defaults to `"auto"`, handled by Remotion template)
+
+**Output:** Include `renderMode` in both `videoConfig` (as overall default) and per-scene overrides where they differ from the default.
 
 ### Phase 5.6 — BGM & SFX Download
 
