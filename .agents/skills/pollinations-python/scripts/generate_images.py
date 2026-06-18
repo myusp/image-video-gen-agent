@@ -86,12 +86,21 @@ for scene_num in scenes:
     )
 
     print(f"[GEN] scene_{scene_num} seed={seed} ...")
-    resp = requests.get(
-        url,
-        headers={"Authorization": f"Bearer {API_KEY}"},
-        timeout=120,
-    )
-    resp.raise_for_status()
+    max_retries = 5
+    for attempt in range(1, max_retries + 1):
+        try:
+            resp = requests.get(
+                url,
+                headers={"Authorization": f"Bearer {API_KEY}"},
+                timeout=300,
+            )
+            resp.raise_for_status()
+            break
+        except Exception as e:
+            if attempt < max_retries:
+                print(f"[RETRY {attempt}/{max_retries}] {e}")
+            else:
+                raise
 
     image_path.write_bytes(resp.content)
     print(f"[OK]  Saved {image_path} ({len(resp.content) // 1024}KB)")
