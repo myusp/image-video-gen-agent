@@ -1,0 +1,964 @@
+{
+  "videoConfig": {
+    "orientation": "landscape",
+    "width": 1920,
+    "height": 1080,
+    "renderMode": "contain_blur"
+  },
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "imagePath": "scene_1/image_1.jpeg",
+      "audioPath": "scene_1/audio_1.mp3",
+      "durationSeconds": 9.82,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 2,
+      "imagePath": "scene_2/image_2.jpeg",
+      "audioPath": "scene_2/audio_2.mp3",
+      "durationSeconds": 10.14,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": "whoosh"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 3,
+      "imagePath": "scene_3/image_3.jpeg",
+      "audioPath": "scene_3/audio_3.mp3",
+      "durationSeconds": 9.52,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 4,
+      "imagePath": "scene_4/image_4.jpeg",
+      "audioPath": "scene_4/audio_4.mp3",
+      "durationSeconds": 10.0,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 5,
+      "imagePath": "scene_5/image_5.jpeg",
+      "audioPath": "scene_5/audio_5.mp3",
+      "durationSeconds": 10.14,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "flip",
+        "durationInFrames": 15,
+        "sfx": "ding"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 6,
+      "imagePath": "scene_6/image_6.jpeg",
+      "audioPath": "scene_6/audio_6.mp3",
+      "durationSeconds": 8.44,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 7,
+      "imagePath": "scene_7/image_7.jpeg",
+      "audioPath": "scene_7/audio_7.mp3",
+      "durationSeconds": 11.98,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 8,
+      "imagePath": "scene_8/image_8.jpeg",
+      "audioPath": "scene_8/audio_8.mp3",
+      "durationSeconds": 9.78,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 9,
+      "imagePath": "scene_9/image_9.jpeg",
+      "audioPath": "scene_9/audio_9.mp3",
+      "durationSeconds": 11.0,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 10,
+      "imagePath": "scene_10/image_10.jpeg",
+      "audioPath": "scene_10/audio_10.mp3",
+      "durationSeconds": 10.04,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "wipe-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 11,
+      "imagePath": "scene_11/image_11.jpeg",
+      "audioPath": "scene_11/audio_11.mp3",
+      "durationSeconds": 9.42,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 12,
+      "imagePath": "scene_12/image_12.jpeg",
+      "audioPath": "scene_12/audio_12.mp3",
+      "durationSeconds": 9.38,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 13,
+      "imagePath": "scene_13/image_13.jpeg",
+      "audioPath": "scene_13/audio_13.mp3",
+      "durationSeconds": 8.92,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 14,
+      "imagePath": "scene_14/image_14.jpeg",
+      "audioPath": "scene_14/audio_14.mp3",
+      "durationSeconds": 9.58,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-right",
+        "durationInFrames": 15,
+        "sfx": "whip"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 15,
+      "imagePath": "scene_15/image_15.jpeg",
+      "audioPath": "scene_15/audio_15.mp3",
+      "durationSeconds": 9.58,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 16,
+      "imagePath": "scene_16/image_16.jpeg",
+      "audioPath": "scene_16/audio_16.mp3",
+      "durationSeconds": 9.96,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 17,
+      "imagePath": "scene_17/image_17.jpeg",
+      "audioPath": "scene_17/audio_17.mp3",
+      "durationSeconds": 11.96,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 18,
+      "imagePath": "scene_18/image_18.jpeg",
+      "audioPath": "scene_18/audio_18.mp3",
+      "durationSeconds": 10.06,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "clock-wipe",
+        "durationInFrames": 15,
+        "sfx": "ding"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 19,
+      "imagePath": "scene_19/image_19.jpeg",
+      "audioPath": "scene_19/audio_19.mp3",
+      "durationSeconds": 9.8,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "flip",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 20,
+      "imagePath": "scene_20/image_20.jpeg",
+      "audioPath": "scene_20/audio_20.mp3",
+      "durationSeconds": 11.74,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 21,
+      "imagePath": "scene_21/image_21.jpeg",
+      "audioPath": "scene_21/audio_21.mp3",
+      "durationSeconds": 9.64,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-right",
+        "durationInFrames": 15,
+        "sfx": "whoosh"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 22,
+      "imagePath": "scene_22/image_22.jpeg",
+      "audioPath": "scene_22/audio_22.mp3",
+      "durationSeconds": 9.38,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "clock-wipe",
+        "durationInFrames": 15,
+        "sfx": "ding"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 23,
+      "imagePath": "scene_23/image_23.jpeg",
+      "audioPath": "scene_23/audio_23.mp3",
+      "durationSeconds": 8.36,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 24,
+      "imagePath": "scene_24/image_24.jpeg",
+      "audioPath": "scene_24/audio_24.mp3",
+      "durationSeconds": 9.66,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 25,
+      "imagePath": "scene_25/image_25.jpeg",
+      "audioPath": "scene_25/audio_25.mp3",
+      "durationSeconds": 10.22,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 26,
+      "imagePath": "scene_26/image_26.jpeg",
+      "audioPath": "scene_26/audio_26.mp3",
+      "durationSeconds": 9.421,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 27,
+      "imagePath": "scene_27/image_27.jpeg",
+      "audioPath": "scene_27/audio_27.mp3",
+      "durationSeconds": 9.46,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "flip",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 28,
+      "imagePath": "scene_28/image_28.jpeg",
+      "audioPath": "scene_28/audio_28.mp3",
+      "durationSeconds": 9.04,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 29,
+      "imagePath": "scene_29/image_29.jpeg",
+      "audioPath": "scene_29/audio_29.mp3",
+      "durationSeconds": 10.12,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 30,
+      "imagePath": "scene_30/image_30.jpeg",
+      "audioPath": "scene_30/audio_30.mp3",
+      "durationSeconds": 10.2,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 31,
+      "imagePath": "scene_31/image_31.jpeg",
+      "audioPath": "scene_31/audio_31.mp3",
+      "durationSeconds": 9.02,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "clock-wipe",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 32,
+      "imagePath": "scene_32/image_32.jpeg",
+      "audioPath": "scene_32/audio_32.mp3",
+      "durationSeconds": 11.14,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "wipe-from-right",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 33,
+      "imagePath": "scene_33/image_33.jpeg",
+      "audioPath": "scene_33/audio_33.mp3",
+      "durationSeconds": 8.72,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": "whip"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 34,
+      "imagePath": "scene_34/image_34.jpeg",
+      "audioPath": "scene_34/audio_34.mp3",
+      "durationSeconds": 8.92,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "flip",
+        "durationInFrames": 15,
+        "sfx": "ding"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 35,
+      "imagePath": "scene_35/image_35.jpeg",
+      "audioPath": "scene_35/audio_35.mp3",
+      "durationSeconds": 8.28,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 36,
+      "imagePath": "scene_36/image_36.jpeg",
+      "audioPath": "scene_36/audio_36.mp3",
+      "durationSeconds": 9.24,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 37,
+      "imagePath": "scene_37/image_37.jpeg",
+      "audioPath": "scene_37/audio_37.mp3",
+      "durationSeconds": 10.88,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "wipe-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 38,
+      "imagePath": "scene_38/image_38.jpeg",
+      "audioPath": "scene_38/audio_38.mp3",
+      "durationSeconds": 8.34,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "slide-from-right",
+        "durationInFrames": 15,
+        "sfx": "whoosh"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 39,
+      "imagePath": "scene_39/image_39.jpeg",
+      "audioPath": "scene_39/audio_39.mp3",
+      "durationSeconds": 8.14,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 40,
+      "imagePath": "scene_40/image_40.jpeg",
+      "audioPath": "scene_40/audio_40.mp3",
+      "durationSeconds": 8.84,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 41,
+      "imagePath": "scene_41/image_41.jpeg",
+      "audioPath": "scene_41/audio_41.mp3",
+      "durationSeconds": 8.18,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-right",
+        "durationInFrames": 15,
+        "sfx": "whip"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 42,
+      "imagePath": "scene_42/image_42.jpeg",
+      "audioPath": "scene_42/audio_42.mp3",
+      "durationSeconds": 11.82,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 43,
+      "imagePath": "scene_43/image_43.jpeg",
+      "audioPath": "scene_43/audio_43.mp3",
+      "durationSeconds": 10.12,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 44,
+      "imagePath": "scene_44/image_44.jpeg",
+      "audioPath": "scene_44/audio_44.mp3",
+      "durationSeconds": 10.66,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-right",
+        "durationInFrames": 15,
+        "sfx": "whoosh"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 45,
+      "imagePath": "scene_45/image_45.jpeg",
+      "audioPath": "scene_45/audio_45.mp3",
+      "durationSeconds": 10.76,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 46,
+      "imagePath": "scene_46/image_46.jpeg",
+      "audioPath": "scene_46/audio_46.mp3",
+      "durationSeconds": 8.78,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "clock-wipe",
+        "durationInFrames": 15,
+        "sfx": "ding"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 47,
+      "imagePath": "scene_47/image_47.jpeg",
+      "audioPath": "scene_47/audio_47.mp3",
+      "durationSeconds": 11.04,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 48,
+      "imagePath": "scene_48/image_48.jpeg",
+      "audioPath": "scene_48/audio_48.mp3",
+      "durationSeconds": 9.76,
+      "motionEffect": "zoom_out",
+      "renderMode": "cover_subtle",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 49,
+      "imagePath": "scene_49/image_49.jpeg",
+      "audioPath": "scene_49/audio_49.mp3",
+      "durationSeconds": 10.38,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "flip",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 50,
+      "imagePath": "scene_50/image_50.jpeg",
+      "audioPath": "scene_50/audio_50.mp3",
+      "durationSeconds": 10.3,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "fade",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 51,
+      "imagePath": "scene_51/image_51.jpeg",
+      "audioPath": "scene_51/audio_51.mp3",
+      "durationSeconds": 8.0,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 52,
+      "imagePath": "scene_52/image_52.jpeg",
+      "audioPath": "scene_52/audio_52.mp3",
+      "durationSeconds": 9.42,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-right",
+        "durationInFrames": 15,
+        "sfx": "whip"
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    },
+    {
+      "sceneNumber": 53,
+      "imagePath": "scene_53/image_53.jpeg",
+      "audioPath": "scene_53/audio_53.mp3",
+      "durationSeconds": 8.16,
+      "motionEffect": "none",
+      "renderMode": "contain_blur",
+      "in": {
+        "transition": "slide-from-left",
+        "durationInFrames": 15,
+        "sfx": null
+      },
+      "out": {
+        "transition": null,
+        "durationInFrames": 15,
+        "sfx": null
+      }
+    }
+  ]
+}
