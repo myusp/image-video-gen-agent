@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
 """Setup scene folders from an SRT transcript + optional audio file.
 
-Groups SRT entries into scenes at natural sentence breaks,
-creates scene_N/ folders, writes per-scene subtitles_N.txt and subtitle_N.srt,
+Supports two grouping modes:
+
+  --scene-breaks (recommended): Agent-specified time ranges [[start, end], ...].
+      The AI agent reads the SRT, analyzes narrative context, and provides
+      explicit scene boundaries. The script creates folders from those decisions.
+
+  Duration-based (legacy fallback): Groups entries at sentence breaks, targeting
+      a duration-per-scene. Use --target-duration / --max-duration.
+
+Creates scene_N/ folders, writes per-scene subtitles_N.txt and subtitle_N.srt,
 optionally copies the full audio as audio_full.mp3, and writes scene_times.json
 for use by split_audio.py.
 
 Usage:
+    python setup_scenes.py <project_folder> --srt <path/to/file.srt> \
+        [--audio <path/to/audio.mp3>] \
+        [--scene-breaks '[[0.0, 18.4], [18.4, 35.2], ...]']
+
     python setup_scenes.py <project_folder> --srt <path/to/file.srt> \
         [--audio <path/to/audio.mp3>] \
         [--target-duration 13] \
@@ -16,13 +28,13 @@ Examples:
     python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
         output/20260417_my-video \
         --srt "recording.srt" \
-        --audio "recording.mp3"
+        --audio "recording.mp3" \
+        --scene-breaks '[[0.0, 22.5], [22.5, 45.1], [45.1, 71.0]]'
 
     python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
         output/20260417_my-video \
         --srt "recording.srt" \
-        --target-duration 10 \
-        --max-duration 14
+        --audio "recording.mp3"
 """
 
 import argparse
@@ -80,6 +92,23 @@ def ends_sentence(text: str) -> bool:
     """Return True if text ends at a natural sentence boundary."""
     t = text.rstrip()
     return t.endswith((".", "?", "!", ":"))
+
+
+def group_by_breaks(entries, breaks):
+    """Group SRT entries into scenes using explicit time ranges from the agent.
+
+    Each break is [start_sec, end_sec]. SRT entries are assigned to the break
+    whose range contains their midpoint. Empty breaks are skipped.
+    """
+    scenes = []
+    for break_start, break_end in breaks:
+        scene_entries = [
+            (s, e, t) for s, e, t in entries
+            if (s + e) / 2 >= break_start - 0.05 and (s + e) / 2 < break_end + 0.05
+        ]
+        if scene_entries:
+            scenes.append(scene_entries)
+    return scenes
 
 
 def group_into_scenes(entries, target_dur: float = 13.0, max_dur: float = 15.0):
@@ -153,12 +182,20 @@ def main():
         help="Path to the full audio file. Copied as audio_full.mp3 if provided."
     )
     parser.add_argument(
+        "--scene-breaks", default=None,
+        help=(
+            "Agent-specified scene boundaries as JSON [[start_sec, end_sec], ...]. "
+            "When provided, overrides duration-based grouping. "
+            "Example: '[[0.0, 18.4], [18.4, 35.2], [35.2, 71.0]]'"
+        )
+    )
+    parser.add_argument(
         "--target-duration", type=float, default=13.0,
-        help="Target seconds per scene (default: 13)"
+        help="(Legacy) Target seconds per scene when not using --scene-breaks (default: 13)"
     )
     parser.add_argument(
         "--max-duration", type=float, default=15.0,
-        help="Hard max seconds per scene (default: 15)"
+        help="(Legacy) Hard max seconds per scene when not using --scene-breaks (default: 15)"
     )
     args = parser.parse_args()
 
@@ -189,13 +226,19 @@ def main():
     print(f"[OK] Parsed {len(entries)} SRT entries from {srt_file.name}")
 
     # Group into scenes
-    scenes = group_into_scenes(
-        entries,
-        target_dur=args.target_duration,
-        max_dur=args.max_duration,
-    )
-    print(f"[OK] Grouped into {len(scenes)} scenes "
-          f"(target={args.target_duration}s, max={args.max_duration}s)")
+    if args.scene_breaks:
+        import json as _json
+        breaks = _json.loads(args.scene_breaks)
+        scenes = group_by_breaks(entries, breaks)
+        print(f"[OK] Grouped into {len(scenes)} scenes (agent-specified breaks)")
+    else:
+        scenes = group_into_scenes(
+            entries,
+            target_dur=args.target_duration,
+            max_dur=args.max_duration,
+        )
+        print(f"[OK] Grouped into {len(scenes)} scenes "
+              f"(duration-based: target={args.target_duration}s, max={args.max_duration}s)")
 
     # Write scene_times.json — used by split_audio.py
     scene_times = []

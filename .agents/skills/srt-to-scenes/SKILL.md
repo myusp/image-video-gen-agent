@@ -31,6 +31,29 @@ Convert an existing SRT transcript and audio file into a structured scene-based 
 
 ### Step 1 — Setup scene folders from SRT
 
+Two modes are supported. **Agent-driven mode is preferred** for highest content quality.
+
+#### Mode A — Agent-Driven (recommended)
+
+The agent reads the full SRT transcript, analyzes narrative context and visual representability, then
+decides scene boundaries. Scene count is unrestricted — each scene = one coherent visual concept.
+
+```bash
+python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
+  output/{yyyymmdd}_{title_slug} \
+  --srt "path/to/transcript.srt" \
+  --audio "path/to/audio.mp3" \
+  --scene-breaks '[[0.0, 22.5], [22.5, 45.1], [45.1, 71.0]]'
+```
+
+`--scene-breaks` is a JSON array of `[start_sec, end_sec]` pairs — one per scene. The agent
+reads the SRT timestamps and outputs this array after analyzing the narrative.
+
+#### Mode B — Duration-Based (legacy fallback)
+
+Groups SRT entries at sentence boundaries, targeting a fixed seconds-per-scene. Use when
+agent-driven analysis is not available.
+
 ```bash
 python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
   output/{yyyymmdd}_{title_slug} \
@@ -40,8 +63,8 @@ python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
   [--max-duration 15]
 ```
 
-**What it does:**
-- Parses SRT into entries → groups at natural sentence breaks
+**What it does (both modes):**
+- Parses SRT into entries → groups by agent-specified breaks or duration rules
 - Creates `scene_N/` folders (resumable: skips existing)
 - Writes `scene_N/subtitles_N.txt` (concatenated narration text)
 - Writes `scene_N/subtitle_N.srt` (per-scene SRT, time-offset to 0)
@@ -55,8 +78,9 @@ python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
 |------|---------|-------------|
 | `--srt` | *(required)* | Path to the SRT transcript file |
 | `--audio` | none | Path to the full audio file. Copied as `audio_full.mp3`. |
-| `--target-duration` | `13` | Target seconds per scene (break at sentence boundary) |
-| `--max-duration` | `15` | Hard max seconds per scene (force break regardless) |
+| `--scene-breaks` | none | Agent-specified scene boundaries as JSON `[[start, end], ...]`. Overrides duration-based grouping. |
+| `--target-duration` | `13` | (Legacy) Target seconds per scene when not using `--scene-breaks` |
+| `--max-duration` | `15` | (Legacy) Hard max seconds per scene when not using `--scene-breaks` |
 
 ---
 
@@ -159,11 +183,12 @@ output/{yyyymmdd}_{title_slug}/
 ## Full End-to-End Command Sequence
 
 ```bash
-# 1. Setup scene folders from SRT + audio
+# 1. Agent reads the SRT, analyzes narrative, decides scene breaks, then:
 python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
   output/20260417_my-video \
   --srt "recording.srt" \
-  --audio "recording.mp3"
+  --audio "recording.mp3" \
+  --scene-breaks '[[0.0, 22.5], [22.5, 48.3], [48.3, 71.0]]'
 
 # 2. Split audio per scene
 python .agents/skills/srt-to-scenes/scripts/split_audio.py \

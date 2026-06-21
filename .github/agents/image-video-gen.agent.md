@@ -16,7 +16,7 @@ You are an expert **image-based video production agent**. Your job is to orchest
 - DO NOT regenerate already-completed scenes (check for existing files to enable resume)
 - DO NOT use a different image style per scene — one `{image_style}` is locked in Phase 0 and appended to every scene prompt
 - ONLY use `pollinations-python` skill for image generation
-- ONLY use `ai-image-prompts-skill` to find and adapt curated prompt templates for scene image prompts
+- ONLY use `text-to-image-prompt-optimizer` skill to generate and optimize scene image prompts
 - ONLY use `shorts-script-personality` skill for script writing (combine with `content-creation`, `social-content`, `youtube-scriptwriting` skills when generating script from title only — see Phase 1.5)
 - ONLY use `edge-tts` skill for voice narration / TTS generation
 - ONLY use `pixabay-audio` skill for BGM and SFX downloads
@@ -138,8 +138,6 @@ Use this phase when the user has a pre-existing SRT transcript (from a recording
 **Collect inputs:**
 - `{srt_file}` — path to the SRT transcript file
 - `{audio_file}` — path to full audio file (optional if audio already split)
-- `{target_duration}` — target seconds per scene (default: `13`)
-- `{max_duration}` — hard max seconds per scene (default: `15`)
 - `{orientation}` — `landscape` or `portrait` (default: `landscape` for long-form; ask if unclear)
 - `{title_slug}` — derive from video topic or filename; confirm with user
 
@@ -150,18 +148,46 @@ yyyymmdd = date.today().strftime("%Y%m%d")
 # project_folder = f"{OUTPUT}/{yyyymmdd}_{title_slug}/"
 ```
 
-**Step 1 — Setup scene folders:**
+**Step 0 — Read and understand the full transcript:**
+
+Read `{srt_file}` using the Read tool. Parse every SRT block (index, timestamps, text) to build a complete picture of the narration arc, topics, and flow.
+
+**Step 1 — Analyze narrative and decide scene groupings (AI-driven):**
+
+This is the core intelligence step. Do NOT rely on duration. Instead, group SRT entries by **what the visual should show** — each scene = one coherent, illustratable concept.
+
+Apply these rules:
+1. **Visual coherence first** — every entry in a scene must share one visual concept or setting
+2. **Narrative closure** — end scenes at complete thoughts (sentence boundary), never mid-sentence
+3. **Topic shift = scene break** — new subject, location, person, or idea = new scene
+4. **Transition phrases signal a break** — e.g. "Selanjutnya...", "Kemudian...", "Di sisi lain...", "Artinya...", "Bayangkan..."
+5. **No duration constraints** — a scene can be 3s (one punchy statement) or 40s (a multi-part explanation); follow the narrative
+6. **Emotion/mood shift = scene break** — a change in tone or energy level warrants a new visual
+
+After analysis, output a proposed scene breakdown table:
+
+```
+| # | Time range       | Narration summary (first ~10 words)        |
+|---|------------------|--------------------------------------------|
+| 1 | 0.000 – 22.480   | "Di era digital ini, hampir semua transaksi..." |
+| 2 | 22.480 – 45.120  | "Tapi tahukah kamu, ada kelompok yang..."   |
+...
+```
+
+Then construct `{scene_breaks}` as a JSON array of `[start_sec, end_sec]` pairs — one row per scene.
+Use the SRT entry timestamps directly (start of first entry → end of last entry per group).
+
+**Step 2 — Create scene folders:**
 ```bash
 python .agents/skills/srt-to-scenes/scripts/setup_scenes.py \
   {project_folder} \
   --srt "{srt_file}" \
   --audio "{audio_file}" \
-  --target-duration {target_duration} \
-  --max-duration {max_duration}
+  --scene-breaks '{scene_breaks}'
 ```
 Report: number of scenes created, time ranges, first line of each scene.
 
-**Step 2 — Split audio per scene:**
+**Step 3 — Split audio per scene:**
 ```bash
 python .agents/skills/srt-to-scenes/scripts/split_audio.py {project_folder}
 ```
@@ -253,12 +279,13 @@ Rules:
 
 ### Phase 4 — Image Prompt Generation per Scene
 
-For each scene segment, invoke the `ai-image-prompts-skill` to find a curated prompt template that fits the scene. Provide:
+For each scene segment, invoke the `text-to-image-prompt-optimizer` skill to generate an optimized image prompt. Provide:
 - The scene subtitle text as the content context
 - The overarching video **style** (e.g. `cinematic realism`, `anime`, `flat illustration`, `photorealistic`)
 - The story **theme** / topic
+- The target image model (e.g. `nanobanana` for Gemini, `flux` for Flux Schnell)
 
-The skill returns a curated prompt template with a sample image. Use the returned template as the base and adapt it to the exact scene narrative. The final prompt must:
+The skill generates an optimized prompt tailored to the target model. Use the output directly, adapting only scene-specific details. The final prompt must:
 - Be visually specific: describe the shot composition, lighting, subject, and atmosphere
 - Encode movement-friendly framing hints where relevant (e.g. "wide establishing shot", "extreme close-up", "low angle looking up") — these hints are later used to choose the motion effect
 - If the scene contains **text, data, labels, infographics, UI elements, signs, or any content where cropping would damage readability**, include a note in the prompt like `"text-heavy infographic"`, `"detailed data visualization"`, or `"signs and labels visible"` — this signals Phase 5.7 to select `contain_blur` render mode. If purely scenic/cinematic with no critical edge content, omit such notes (defaults to `cover_subtle`)
@@ -401,7 +428,7 @@ Rules for metadata:
 - `description`: summarise the video narrative, add a call-to-action at the end (e.g. "Follow for more" or "Save this video")
 - `hashtags`: 5–10 relevant tags mixing broad reach tags and niche topic tags; write with `#` prefix as strings in the array
 - `thumbnail_prompt`: a detailed prompt for generating a compelling video thumbnail image. To create this:
-  1. Use the `ai-image-prompts-skill` to find a curated thumbnail/poster prompt template
+  1. Use the `text-to-image-prompt-optimizer` skill to generate an optimized thumbnail prompt for the target model
   2. Use the `content-creation` skill to determine the best visual hook based on the narration
   3. The prompt MUST include: an eye-catching focal subject, bold composition (close-up or dynamic angle), vibrant colors with high contrast, NO text overlays (text is added separately), emotional expression or dramatic scene that represents the video's core message
   4. Append `{image_style}` to maintain visual consistency with scene images
@@ -473,8 +500,8 @@ At every phase start, check what already exists in the output folder:
 - If `audio/audio_manifest.json` exists → audio download phase complete
 
 **SRT mode additional skip conditions:**
-- If `scene_times.json` exists → `setup_scenes.py` already ran, skip Phase 1.9 Step 1
-- If `audio_durations.json` exists → `split_audio.py` already ran, skip Phase 1.9 Step 2
+- If `scene_times.json` exists → `setup_scenes.py` already ran (Steps 0–2 done), skip to Phase 1.9 Step 3
+- If `audio_durations.json` exists → `split_audio.py` already ran, skip Phase 1.9 Step 3
 - If `scene-config.json` exists → `build_config.py` already ran, skip Phase 5.7
 
 This allows recovering from network errors or partial runs without redoing completed work.
