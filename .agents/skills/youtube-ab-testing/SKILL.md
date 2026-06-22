@@ -14,10 +14,12 @@ description: >
 
 # YouTube A/B Testing Skill
 
+**REQUIRED SUB-SKILL:** Use [seo-keyword-research](../../seo-keyword-research/SKILL.md) for keyword discovery, trend scoring, intent classification, and semantic clustering. Install and configure SearXNG instance first (lihat seo-keyword-research config).
+
 ## Alur Kerja Utama
 
 1. **Baca & Pahami SRT** — ekstrak tema inti, hook terkuat, angle unik, fakta mengejutkan
-2. **Riset Keyword** — identifikasi keyword primer (long-tail), sekunder, dan broad
+2. **Riset Keyword via SEO Pipeline** — jalankan seo-keyword-research 8-fase pipeline untuk autocomplete, SERP, trends, intent, clustering
 3. **Tentukan strategi CTR** — sesuai target yang diminta (realistis 6–10%, agresif 15–20%)
 4. **Render widget interaktif** — thumbnail A & B divisualisasikan langsung di chat
 5. **Output lengkap** — judul, deskripsi, hashtag, tags, kategori, image prompts, upload checklist
@@ -37,31 +39,67 @@ Sebelum apapun, ekstrak dari transkrip:
 
 ---
 
-## Step 2 — Riset & Strategi Keyword
+## Step 2 — Riset Keyword via SEO Pipeline
 
-### Tiga Kategori Keyword
+**Gunakan [seo-keyword-research](../../seo-keyword-research/SKILL.md) untuk riset keyword data-driven.** Jangan brainstorming manual.
 
-| Kategori | Karakteristik | Penggunaan |
-|---|---|---|
-| **Long-tail** (3–5 kata) | Volume rendah, kompetisi rendah, intent tinggi | Tag utama, title, deskripsi awal |
-| **Medium-tail** (2–3 kata) | Volume sedang, rankable | Tag sekunder, variasi deskripsi |
-| **Short-tail** (1 kata) | Volume tinggi, kompetisi besar | Hashtag broad, channel keywords |
+### Proses
 
-### Proses Riset
+1. **Ekstrak topik inti** dari SRT (1–2 kalimat)
+2. **Jalankan pipeline seo-keyword-research** (otomatis via `/keyword` atau manual per fase):
 
-1. Tentukan topik video dalam 1–2 kalimat
-2. Brainstorm 8–10 variasi frasa yang mungkin diketik viewer
-3. Gunakan YouTube Autocomplete dan Google Trends (filter: YouTube search)
-4. Prioritaskan: high search volume + low-to-medium competition
+   ```bash
+   # Fase 2 — Discover (autocomplete)
+   python .agents/skills/seo-keyword-research/scripts/autocomplete.py \
+     --query "topik utama" --lang id
+   
+   # Fase 3 — Expand via SearXNG (related searches + PAA)
+   
+   # Fase 4 — Trends
+   python .agents/skills/seo-keyword-research/scripts/trends.py \
+     --keywords "keyword1,keyword2,keyword3" --lang id
+   
+   # Fase 5 — Enrich (Wikipedia entities)
+   python .agents/skills/seo-keyword-research/scripts/wikipedia_enrich.py \
+     --topic "topik" --lang id
+   ```
+
+3. **Cluster keyword** dengan NLP:
+   ```bash
+   python .agents/skills/seo-keyword-research/scripts/nlp_cluster.py \
+     --input keywords-raw.json --lang id
+   ```
+
+4. **Identifikasi 3 kategori keyword dari hasil cluster + score pipeline:**
+
+   | Kategori | Karakteristik | Sumber Pipeline | Penggunaan |
+   |---|---|---|---|
+   | **Primer / Long-tail** (3–5 kata) | Volume rendah, kompetisi rendah, intent tinggi; Opportunity Score tertinggi di clusternya | Cluster pillar topic dengan Trend Score >= 50 | Tag utama, title, deskripsi awal |
+   | **Sekunder / Medium-tail** (2–3 kata) | Volume sedang, rankable | Rising queries + related searches + Wikipedia related topics | Tag sekunder, variasi deskripsi |
+   | **Broad / Short-tail** (1 kata) | Volume tinggi, kompetisi besar | Super-categories Wikipedia + broad cluster | Hashtag broad, channel keywords |
+
+   **Quick Wins** (prioritas): Opportunity Score >= 150, Difficulty < 30, Trend >= 40.
+
+### Output Pipeline → AB Testing Mapping
+
+| Data Pipeline | Guna di AB Testing |
+|---|---|
+| Keywords by Opportunity Score | Judul utama (3–5 kata pertama) |
+| Keywords by Trend Score | Filename, channel keywords |
+| Intent classification | Jenis CTA dan angle copy (info → edukasi, comm → testimoni) |
+| Topic clusters | Pillar konten untuk deskripsi dan chapters |
+| Wikipedia entities | Tags brand/niche, kategori video |
+| Rising queries | Trending hashtag |
+| Keyword difficulty | Prioritas rankability — target difficulty rendah dulu |
 
 ### Penempatan Keyword
 
 - **Filename sebelum upload**: `keyword-utama-topik-video.mp4`
-- **Title**: keyword primer di 3–5 kata pertama (natural)
+- **Title**: keyword primer (long-tail) di 3–5 kata pertama (natural); pilih keyword dengan Opportunity Score tertinggi
 - **Deskripsi kalimat pertama**: keyword primer disebut dalam 1–2 kalimat pertama
-- **Chapters**: gunakan frasa deskriptif, bukan hanya angka waktu
-- **Tags**: dari long-tail spesifik ke short-tail broad
-- **Channel keywords**: 5–10 kata/frasa yang mendeskripsikan niche channel secara keseluruhan
+- **Chapters**: gunakan frasa deskriptif dari pillar topic cluster, bukan hanya angka waktu
+- **Tags**: dari long-tail spesifik ke short-tail broad, urutkan berdasarkan Opportunity Score descending
+- **Channel keywords**: 5–10 super-categories dari Wikipedia enrichment
 
 ---
 
@@ -237,6 +275,8 @@ Render menggunakan `visualize:show_widget` dengan HTML+CSS. Komponen wajib:
 - Variasi B: Format PERTANYAAN/PARADOKS — lebih broad, untuk CTR maksimal
 - Panjang ideal: 60–70 karakter
 - **Keyword primer ditempatkan di 3–5 kata pertama** (bukan di tengah/akhir)
+- Pilih keyword primer dari pipeline output: **Trend Score >= 50** + **Intent Commercial/Transactional** + **Difficulty < 40** untuk CTR optimal
+- Jika tidak ada keyword commercial, gunakan keyword dengan **Opportunity Score tertinggi** sebagai primer
 - Wajib ada: angka spesifik ATAU kata emosi kuat (bangkrut, hancur, tersembunyi, raib, dll)
 - Hindari: clickbait kosong tanpa substansi, judul terlalu panjang
 
@@ -315,12 +355,13 @@ Komposisi:
 ### Tags SEO
 **Batasan teknis YouTube:** total seluruh tag **maksimal 500 karakter**, **minimal 10 tag**.
 
-Stratifikasi berdasarkan kategori keyword:
-- **Long-tail (6–8 tags):** 3–5 kata, spesifik — ini yang paling mudah diranking
-- **Medium-tail (3–4 tags):** 2–3 kata, variasi topik dan nama tokoh/tempat
-- **Short-tail (2–3 tags):** 1–2 kata, broad — tambahkan hanya jika relevan
-- Sertakan: variasi ejaan, pertanyaan yang mungkin diketik user, sinonim
-- Format: semua huruf kecil, dipisah koma, **keyword primer di paling depan**
+Stratifikasi berdasarkan kategori keyword dari pipeline:
+- **Long-tail (6–8 tags):** dari cluster pillar topic dengan Trend Score tertinggi — paling mudah diranking
+- **Medium-tail (3–4 tags):** dari rising queries + related searches hasil pipeline
+- **Short-tail (2–3 tags):** dari Wikipedia super-categories + broad cluster — tambahkan hanya jika relevan
+- Sertakan: variasi ejaan, pertanyaan yang mungkin diketik user, sinonim dari Wikipedia enrichment
+- **Urutkan tag berdasarkan Opportunity Score descending** — keyword dengan score tertinggi di paling depan
+- Format: semua huruf kecil, dipisah koma, **keyword primer (score tertinggi) di paling depan**
 - Selalu hitung total karakter sebelum output — jangan melebihi 500 karakter
 
 ### Kategori
