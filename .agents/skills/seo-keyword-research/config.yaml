@@ -1,0 +1,19 @@
+searxng:
+  url: "http://localhost:8888"
+  timeout: 10
+  max_results: 20
+
+search:
+  default_lang: "id"
+  default_country: "ID"
+  depth_limit: 1
+  engines: ["ac", "rs", "tr", "paa"]
+
+cache:
+  enabled: true
+  ttl_hours: 24
+  path: "~/.seo-keyword/cache"
+
+output:
+  dir: "./seo-output"
+  formats: ["md", "json", "csv"]

@@ -1,0 +1,5 @@
+requests>=2.31.0
+pytrends>=4.9.2
+spacy>=3.7.0
+scikit-learn>=1.4.0
+diskcache>=5.6.0

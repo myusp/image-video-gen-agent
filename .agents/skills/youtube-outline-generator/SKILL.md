@@ -1,6 +1,6 @@
 ---
 name: youtube-outline-generator
-description: Buat outline konten YouTube yang terstruktur, engaging, dan siap produksi — dengan top moments, CTA strategis, dan spotlight Indonesia. Gunakan skill ini kapanpun pengguna meminta outline YouTube, struktur video, rundown konten, atau menyebut kata "outline", "struktur video", "konten YouTube", "top moment", atau meminta format outline untuk topik apapun yang akan dijadikan video. Juga aktif ketika user memberikan deskripsi topik video dan referensi buku/paper. Skill ini menghasilkan outline ringkas tanpa deskripsi visual atau narasi panjang — hanya struktur, waktu, dan top moment.
+description: Buat outline konten YouTube yang terstruktur, engaging, dan siap produksi — dengan top moments, CTA strategis, dan spotlight Indonesia. Gunakan skill ini kapanpun pengguna meminta outline YouTube, struktur video, rundown konten, atau menyebut kata "outline", "struktur video", "konten YouTube", "top moment", atau meminta format outline untuk topik apapun yang akan dijadikan video. Juga aktif ketika user memberikan deskripsi topik video dan referensi buku/paper. Skill ini menghasilkan outline ringkas tanpa deskripsi visual atau narasi panjang — hanya struktur, waktu, dan top moment. Terintegrasi dengan SearXNG untuk riset data aktual dari web sebelum menyusun outline.
 ---
 
 # YouTube Outline Generator
@@ -81,6 +81,34 @@ CTA harus kontekstual — bukan template generik, tapi disambungkan ke isi video
 - Tidak ada narasi panjang dalam outline
 - Setiap poin maksimal 1–2 baris
 - Gunakan kata kerja aktif
+
+---
+
+## Riset Web dengan SearXNG
+
+Sebelum menyusun outline, riset informasi terkini menggunakan SearXNG untuk memastikan data dan fakta aktual.
+
+**REQUIRED SUB-SKILL:** Gunakan [searxng](../searxng/SKILL.md) untuk web search.
+
+### Wajib Riset untuk Segmen Ini
+
+| Segmen | Riset SearXNG |
+|--------|---------------|
+| **Angka / data** (di segmane pun) | Search statistik terkini: `--query "statistik [topik] 2026" --category news --limit 5` |
+| **Studi kasus global** | Search kasus nyata: `--query "studi kasus [topik]" --limit 5` |
+| **Spotlight Indonesia** | Search konteks lokal: `--query "[topik] Indonesia 2026" --category news --limit 5` |
+| **Berita terbaru** | Search update: `--query "[topik] terbaru" --category news --limit 5` |
+| **Argumen pro/kontra** | Search perspektif: `--query "pro kontra [topik]" --limit 5` |
+
+### Alur Riset
+
+1. **Hook & Framing** — search angles atau fakta mengejutkan tentang topik
+2. **Data & Angka** — search statistik kuantitatif untuk memperkuat argumen
+3. **Studi Kasus** — search contoh nyata, sejarah, atau kejadian aktual
+4. **Spotlight Indonesia** — search data lokal Indonesia TOP MOMENT
+5. **Integrasikan temuan** ke poin outline dan TOP MOMENT
+
+> Data hasil SearXNG digunakan sebagai referensi konten outline. Setiap statistik/fakta dalam outline harus bisa diverifikasi dari hasil pencarian.
 
 ---
 
