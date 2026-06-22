@@ -75,8 +75,12 @@ class CacheManager:
                 return
             except Exception:
                 pass
+        import shutil
         for f in self.cache_path.iterdir():
-            f.unlink()
+            if f.is_dir():
+                shutil.rmtree(f)
+            else:
+                f.unlink()
 
 
 def _safe_filename(key: str) -> str:
